@@ -1,0 +1,30 @@
+/**
+ * \page page3 CAN Bus
+ *
+ * \section can_ack Acknowledgements
+ *
+ * Most functions and sequences are based on CAN tutorial by Fabian Greif
+ * (http://www.kreatives-chaos.com) and his CAN library. I took the freedom
+ * to adapt and re-write, so I could learn and not only take it as is. You
+ * may have still the feeling, that I did not understand some things fully.
+ * You could be right ;-)
+ *
+ * Nevertheless, without Fabians work, this little project would have taken
+ * much, much longer or may never even finished.
+ *
+ * Thanks!
+ *
+ * \section can_reason Reason for Dual CAN
+ *
+ * Since new cars come with CAN bus to control anything, the need to use these
+ * signals arose when trying to build in my old CAN controlled radio.
+ *
+ * Single CAN solutions exist, but often they lack in something or other. So I
+ * used the tips and tricks to combine such solutions.
+ *
+ * Both CAN buses (could) use a different bitrate. Only a small number of
+ * signals are needed to communicate between buses. Sleep and/or power down
+ * functionality is a must, if you don't want to help your car waking up after
+ * a weekend. Of course, if you have access to other information, make use of
+ * it.
+ */
