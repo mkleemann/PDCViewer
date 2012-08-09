@@ -1,0 +1,25 @@
+PDCViewer - CAN based PDC (park distance control) optical feedback
+==============================================================================
+
+Simple prove of concept to get PDC CAN signals from a car to show on LED
+bargraphs.
+
+
+Current Stage:
+==============
+
+Initial setup - nothing yet.
+
+
+Next Steps/Ideas:
+=================
+(M)andatory
+(O)ptional
+(S)tarted Implementation
+(P)artly Implemented
+(T)esting and Optimizing
+(D)one
+
+- (M) show distance on one bargraph (common set)
+- (O) show distances independently
+
