@@ -158,6 +158,15 @@
     <None Include="can\can_mcp2515.dox">
       <SubType>compile</SubType>
     </None>
+    <None Include="doxygen.conf">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="makedep.mk">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="Makefile">
+      <SubType>compile</SubType>
+    </None>
     <None Include="spi\spi.dox">
       <SubType>compile</SubType>
     </None>

@@ -38,24 +38,25 @@ DOC_CONF := doxygen.conf
 
 # Every subdirectory with source files must be described here
 SUBDIRS :=  \
-./can \
 ./bar \
-./util \
+./can \
+./spi \
 ./timer \
-./spi
+./util
 
 
-# Add inputs and outputs from these tool invocations to the build variables
+# Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ./bar/bar.c \
+./can/can_error_mcp2515.c \
 ./can/can_filter_mcp2515.c \
 ./can/can_init_mcp2515.c \
 ./can/can_receive_mcp2515.c \
-./can/can_sleep_mcp2515.c \
 ./can/can_send_mcp2515.c \
+./can/can_sleep_mcp2515.c \
 ./PDCViewer.c \
 ./spi/spi.c \
-./timer/timer.c \
+./timer/timer.c
 
 
 PREPROCESSING_SRCS +=
@@ -66,73 +67,78 @@ ASM_SRCS +=
 
 OBJS +=  \
 bar/bar.o \
+can/can_error_mcp2515.o \
 can/can_filter_mcp2515.o \
 can/can_init_mcp2515.o \
 can/can_receive_mcp2515.o \
-can/can_sleep_mcp2515.o \
 can/can_send_mcp2515.o \
+can/can_sleep_mcp2515.o \
 PDCViewer.o \
 spi/spi.o \
-timer/timer.o \
+timer/timer.o
 
 
 OBJS_AS_ARGS +=  \
 bar/bar.o \
+can/can_error_mcp2515.o \
 can/can_filter_mcp2515.o \
 can/can_init_mcp2515.o \
 can/can_receive_mcp2515.o \
-can/can_sleep_mcp2515.o \
 can/can_send_mcp2515.o \
+can/can_sleep_mcp2515.o \
 PDCViewer.o \
 spi/spi.o \
-timer/timer.o \
+timer/timer.o
 
 
 C_DEPS +=  \
 bar/bar.d \
+can/can_error_mcp2515.d \
 can/can_filter_mcp2515.d \
 can/can_init_mcp2515.d \
 can/can_receive_mcp2515.d \
-can/can_sleep_mcp2515.d \
 can/can_send_mcp2515.d \
+can/can_sleep_mcp2515.d \
 PDCViewer.d \
 spi/spi.d \
-timer/timer.d \
+timer/timer.d
 
 
 C_DEPS_AS_ARGS +=  \
 bar/bar.d \
+can/can_error_mcp2515.d \
 can/can_filter_mcp2515.d \
 can/can_init_mcp2515.d \
 can/can_receive_mcp2515.d \
-can/can_sleep_mcp2515.d \
 can/can_send_mcp2515.d \
+can/can_sleep_mcp2515.d \
 PDCViewer.d \
 spi/spi.d \
-timer/timer.d \
+timer/timer.d
 
 TEMPS += \
 bar.i \
+can_error_mcp2515.i \
 can_filter_mcp2515.i \
 can_init_mcp2515.i \
 can_receive_mcp2515.i \
-can_sleep_mcp2515.i \
 can_send_mcp2515.i \
+can_sleep_mcp2515.i \
 PDCViewer.i \
 spi.i \
-timer.i \
+timer.i
 
 S_SRCS += \
 bar.s \
+can_error_mcp2515.s \
 can_filter_mcp2515.s \
 can_init_mcp2515.s \
 can_receive_mcp2515.s \
-can_sleep_mcp2515.s \
 can_send_mcp2515.s \
+can_sleep_mcp2515.s \
 PDCViewer.s \
 spi.s \
-timer.s \
-
+timer.s
 
 OUTPUT_FILE_PATH +=PDCViewer.elf
 
@@ -182,23 +188,19 @@ OUTPUT_FILE_DEP:= ./makedep.mk
 
 
 
-
-
-
-
 bar/%.o: ./bar/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler
 	$(QUOTE)$(AVR_APP_PATH)avr-gcc.exe$(QUOTE) -funsigned-char -funsigned-bitfields -DF_CPU=4000000UL -DMCP_CLOCK=4000000UL  -Os -ffunction-sections -fpack-struct -fshort-enums -Wall -Werror -pedantic -pedantic-errors -c -std=gnu99  -save-temps -mmcu=atmega8   -MD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
 	@echo Finished building: $<
 
-./%.o: ./%.c
+can/%.o: ./can/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler
 	$(QUOTE)$(AVR_APP_PATH)avr-gcc.exe$(QUOTE) -funsigned-char -funsigned-bitfields -DF_CPU=4000000UL -DMCP_CLOCK=4000000UL  -Os -ffunction-sections -fpack-struct -fshort-enums -Wall -Werror -pedantic -pedantic-errors -c -std=gnu99  -save-temps -mmcu=atmega8   -MD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
 	@echo Finished building: $<
 
-can/%.o: ./can/%.c
+./%.o: ./%.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler
 	$(QUOTE)$(AVR_APP_PATH)avr-gcc.exe$(QUOTE) -funsigned-char -funsigned-bitfields -DF_CPU=4000000UL -DMCP_CLOCK=4000000UL  -Os -ffunction-sections -fpack-struct -fshort-enums -Wall -Werror -pedantic -pedantic-errors -c -std=gnu99  -save-temps -mmcu=atmega8   -MD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
