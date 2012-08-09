@@ -11,34 +11,18 @@
  *
  * ----------------------------------------------------------------------------
  *
- * \file PDCViewer.c
+ * \file PDCViewer.h
  *
- * \date Created: 09.08.2012 18:22:46
+ * \date Created: 09.08.2012 22:23:25
  * \author Matthias Kleemann
  **/
 
 
-#include <stdbool.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <avr/sleep.h>
-#include <avr/cpufunc.h>
-#include <util/delay.h>
+#ifndef PDCVIEWER_H_
+#define PDCVIEWER_H_
 
-#include "util/util.h"
-#include "spi/spi.h"
-#include "can/can_mcp2515.h"
-#include "timer/timer.h"
-#include "PDCViewer.h"
 
-/**
- * @brief main loop
- *
- * The main loop consists of the FSM and calls all necessary init sequences
- * before entering it. Any error in the init process will result in
- * entering the error state.
- **/
-int main(void)
-{
 
-}
+
+
+#endif /* PDCVIEWER_H_ */
