@@ -28,16 +28,7 @@
 bool can_check_message_received(eChipSelect chip)
 {
    // check if interrupt pin is (logical not) set - interrupt available
-   bool retVal = false;
-
-   if (CAN_CHIP1 == chip)
-   {
-      retVal = IS_SET(CHIP1_INT_PIN);
-   }
-   else
-   {
-      retVal = IS_SET(CHIP2_INT_PIN);
-   }
+   bool retVal = IS_SET(CHIP1_INT_PIN);
 
    return(retVal);
 }

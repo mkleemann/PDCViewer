@@ -43,10 +43,8 @@ typedef enum
 {
    //! chip 1 (master CAN)
    CAN_CHIP1      = 0,
-   //! chip 2 (slave CAN)
-   CAN_CHIP2      = 1,
    //! always the last one!
-   NUM_OF_MCP2515 = 2
+   NUM_OF_MCP2515 = 1
 } eChipSelect;
 
 
@@ -54,7 +52,7 @@ typedef enum
 /* SETTINGS                                                               */
 /**************************************************************************/
 
-// Port definitions to access the two MCP2515
+// Port definitions to access the defined MCP2515
 
 /**
  * \def CHIP1_CS_PIN
@@ -65,15 +63,5 @@ typedef enum
  */
 #define CHIP1_CS_PIN       B,2
 #define CHIP1_INT_PIN      D,2
-
-/**
- * \def CHIP2_CS_PIN
- * \brief chip select pin of CAN controller 2
- *
- * \def CHIP2_INT_PIN
- * \brief (receive) interrupt pin of CAN controller 2
- */
-#define CHIP2_CS_PIN       B,1
-#define CHIP2_INT_PIN      D,3
 
 #endif /* CAN_CONFIG_MCP2515_H_ */
