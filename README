@@ -8,7 +8,11 @@ bargraphs.
 Current Stage:
 ==============
 
-Initial setup - nothing yet.
+Initial setup - nothing woring yet.
+
+At the first step the communication will be done via CAN - easy re-use of
+CAN2matrix project. Later the information should be taken from the CAN2matrix
+board and transferred - UART - to the viewer to show the information.
 
 
 Next Steps/Ideas:
@@ -21,5 +25,6 @@ Next Steps/Ideas:
 (D)one
 
 - (M) show distance on one bargraph (common set)
+- (M) add communication channel for information to show; UART or CAN
 - (O) show distances independently
 
