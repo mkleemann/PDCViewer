@@ -53,49 +53,54 @@ static volatile state_t fsmState     = INIT;
  **/
 int main(void)
 {
+   initHardware();
 
-   while (1)
+   if(true == initCAN())
    {
-      switch (fsmState)
+      while (1)
       {
-         case RUNNING:
+         switch (fsmState)
          {
-            run();
-            break;
-         }
+            case RUNNING:
+            {
+               run();
+               break;
+            }
 
-         case WAKEUP:
-         {
-            wakeUp();
-            fsmState = RUNNING;
-            break;
-         }
+            case WAKEUP:
+            {
+               wakeUp();
+               fsmState = RUNNING;
+               break;
+            }
 
-         case SLEEP_DETECTED:
-         {
-            sleepDetected();
-            fsmState = SLEEPING;
-            break;
-         }
+            case SLEEP_DETECTED:
+            {
+               sleepDetected();
+               fsmState = SLEEPING;
+               break;
+            }
 
-         case SLEEPING:
-         {
-            sleeping();
-            // set state WAKEUP here, too avoid race conditions
-            // with pending interrupt
-            fsmState = WAKEUP;
-            break;
-         }
+            case SLEEPING:
+            {
+               sleeping();
+               // set state WAKEUP here, too avoid race conditions
+               // with pending interrupt
+               fsmState = WAKEUP;
+               break;
+            }
 
-         default:
-         {
-            errorState();
-            fsmState = ERROR;
-            break;
+            default:
+            {
+               errorState();
+               fsmState = ERROR;
+               break;
+            }
          }
       }
    }
 
+   // something went wrong here
    errorState();
 }
 
@@ -237,5 +242,51 @@ ISR(TIMER2_COMP_vect)
  **/
 ISR(INT0_vect)
 {
+   // does not need to do anything, but needs to be there
+}
+
+
+// === HELPERS ===============================================================
+
+
+/**
+ * \brief Initialize Hardware
+ *
+ * Setting up the peripherals to the AVR and the wake-up interrupt
+ * trigger.
+ *
+ * * \ref page6 to trigger events
+ *
+ * * \ref page5 to communicate to the MCP2515
+ *
+ * * \ref page2 to give user feedback
+ *
+ */
+void initHardware(void)
+{
+   // set timer for bussleep detection
+   initTimer1(TimerCompare);
+
+   // initialize the hardware SPI with default values set in spi/spi_config.h
+   spi_pin_init();
+   spi_master_init();
+
+   // set wakeup interrupt trigger on low level
+   MCUCR |= EXTERNAL_INT0_TRIGGER;
+}
+
+/**
+ * \brief Initialize the CAN controllers
+ *
+ * Calls can_init_mcp2515 for each attached CAN controller and setting up
+ * bit rate. If an error occurs some status LEDs will indicate it.
+ *
+ * See chapter \ref page3 for further details.
+ *
+ * @return true if all is ok. Otherwise false is returned.
+ */
+bool initCAN(void)
+{
+   return can_init_mcp2515(CAN_CHIP1, CAN_BITRATE_100_KBPS, LISTEN_ONLY_MODE);
 }
 

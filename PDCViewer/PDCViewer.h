@@ -113,4 +113,34 @@ void run(void);
 void errorState(void);
 
 
+// === HELPERS ===============================================================
+
+
+/**
+ * \brief Initialize Hardware
+ *
+ * Setting up the peripherals to the AVR and the wake-up interrupt
+ * trigger.
+ *
+ * * \ref page6 to trigger events
+ *
+ * * \ref page5 to communicate to the MCP2515
+ *
+ * * \ref page2 to give user feedback
+ *
+ */
+void initHardware(void);
+
+/**
+ * \brief Initialize the CAN controllers
+ *
+ * Calls can_init_mcp2515 for each attached CAN controller and setting up
+ * bit rate. If an error occurs some status LEDs will indicate it.
+ *
+ * See chapter \ref page3 for further details.
+ *
+ * @return true if all is ok. Otherwise false is returned.
+ */
+bool initCAN(void);
+
 #endif /* PDCVIEWER_H_ */
