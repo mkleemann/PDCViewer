@@ -21,6 +21,15 @@
 #include "can_mcp2515.h"
 
 /**
+ * @brief saved working mode before sleeping
+ *
+ * When waking up, the CAN controller will automatically set the LISTEN_ONLY_MODE
+ * mode. The mode will changed to the one used before, which is not all the
+ * time NORMAL_MODE.
+ */
+uint8_t volatile savedMCP2515WorkingMode = LISTEN_ONLY_MODE;
+
+/**
  * @brief  put MCP2515 (and attached MCP2551) to sleep
  *
  * To put MCP2551 also to sleep, connect RX1BF pin to RS pin of MCP2551. It
@@ -42,6 +51,9 @@ void mcp2515_sleep(eChipSelect         chip,
       bit_modify_mcp2515(chip, BFPCTRL, (1 << B1BFS), (1 << B1BFS));
    }
 
+   // save the current working mode for wakeup
+   savedMCP2515WorkingMode = read_register_mcp2515(chip, CANSTAT(0)) & MODE_SELECT_MASK;
+
    // put the 2515 in sleep mode
    set_mode_mcp2515(chip, SLEEP_MODE);
 
@@ -62,6 +74,10 @@ void mcp2515_sleep(eChipSelect         chip,
  * If in manual wakeup mode, a special sequence is needed to wake the
  * MCP2515 up. This is not needed, when activating the controller by CAN
  * bus activity.
+ *
+ * \note
+ * The CAN controller starts in LISTEN ONLY mode after wakeup. The last mode
+ * when fully operable will be set after wakeup.
  *
  * \attention
  * The MCP2515 will wake up when bus activity occurs or <b>when the MCU sets,
@@ -92,7 +108,7 @@ void mcp2515_wakeup(eChipSelect         chip,
 
    // When we get out of sleep mode, we are in listen mode.
    // Return now into normal mode again.
-   set_mode_mcp2515(chip, NORMAL_MODE);
+   set_mode_mcp2515(chip, savedMCP2515WorkingMode);
 }
 
 

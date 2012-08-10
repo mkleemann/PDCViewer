@@ -219,6 +219,10 @@ void mcp2515_sleep(eChipSelect         chip,
  * MCP2515 up. This is not needed, when activating the controller by CAN
  * bus activity.
  *
+ * \note
+ * The CAN controller starts in LISTEN ONLY mode after wakeup. The last mode
+ * when fully operable will be set after wakeup.
+ *
  * \attention
  * The MCP2515 will wake up when bus activity occurs or <b>when the MCU sets,
  * via the SPI interface, the CANINTF.WAKIF bit to 'generate' a wake-up
