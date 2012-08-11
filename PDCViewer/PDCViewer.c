@@ -51,7 +51,7 @@ static volatile state_t fsmState     = INIT;
  * before entering it. Any error in the init process will result in
  * entering the error state.
  **/
-int main(void)
+int __attribute__((OS_main)) main(void)
 {
    initHardware();
 
@@ -118,7 +118,6 @@ void sleepDetected(void)
 {
    // stop timer for now
    stopTimer1();
-   stopTimer2();
 
    // set CAN controller to sleep
    mcp2515_sleep(CAN_CHIP1, INT_SLEEP_WAKEUP_BY_CAN);
@@ -176,7 +175,6 @@ void wakeUp(void)
 
    // restart timers
    restartTimer1();
-   restartTimer2();
 
    sei();
 }
@@ -224,15 +222,6 @@ void errorState(void)
 ISR(TIMER1_CAPT_vect)
 {
    fsmState = SLEEP_DETECTED;
-}
-
-/**
- * \brief interrupt service routine for Timer2 compare
- *
- * Timer2 compare match interrupt handler
- **/
-ISR(TIMER2_COMP_vect)
-{
 }
 
 /**
