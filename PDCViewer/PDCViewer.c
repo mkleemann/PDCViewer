@@ -33,6 +33,10 @@
 
 // === GLOBALS ===============================================================
 
+/**
+ * \brief testing w/o CAN
+ */
+#define ___NO_CAN___
 
 /**
  * \brief current state of FSM
@@ -55,8 +59,10 @@ int __attribute__((OS_main)) main(void)
 {
    initHardware();
 
+#ifndef ___NO_CAN___
    if(true == initCAN())
    {
+#endif
       while (1)
       {
          switch (fsmState)
@@ -98,7 +104,9 @@ int __attribute__((OS_main)) main(void)
             }
          }
       }
+#ifndef ___NO_CAN___
    }
+#endif
 
    // something went wrong here
    errorState();
@@ -119,8 +127,10 @@ void sleepDetected(void)
    // stop timer for now
    stopTimer1();
 
+#ifndef ___NO_CAN___
    // set CAN controller to sleep
    mcp2515_sleep(CAN_CHIP1, INT_SLEEP_WAKEUP_BY_CAN);
+#endif
 }
 
 /**
@@ -170,8 +180,10 @@ void wakeUp(void)
 {
    cli();
 
+#ifndef ___NO_CAN___
    // wakeup CAN bus
    mcp2515_wakeup(CAN_CHIP1, INT_SLEEP_WAKEUP_BY_CAN);
+#endif
 
    // restart timers
    restartTimer1();
@@ -186,6 +198,7 @@ void wakeUp(void)
  */
 void run(void)
 {
+#ifndef ___NO_CAN___
    can_t msg;
 
    if (can_check_message_received(CAN_CHIP1))
@@ -199,6 +212,14 @@ void run(void)
          // fetch information from CAN1
       }
    }
+#else
+   // testing w/o CAN
+
+   // reset timer counter
+   setTimer1Count(0);
+
+
+#endif
 }
 
 /**
@@ -256,9 +277,11 @@ void initHardware(void)
    // set timer for bussleep detection
    initTimer1(TimerCompare);
 
+#ifndef ___NO_CAN___
    // initialize the hardware SPI with default values set in spi/spi_config.h
    spi_pin_init();
    spi_master_init();
+#endif
 
    // set wakeup interrupt trigger on low level
    MCUCR |= EXTERNAL_INT0_TRIGGER;
