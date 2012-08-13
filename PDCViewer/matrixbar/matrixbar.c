@@ -11,7 +11,7 @@
  *
  * ----------------------------------------------------------------------------
  *
- * \file bar.c
+ * \file matrixbar.c
  *
  * \date Created: 04.02.2012 21:19:14
  * \author Matthias Kleemann
@@ -20,7 +20,7 @@
 
 #include <avr/io.h>
 #include "../util/util.h"
-#include "bar.h"
+#include "matrixbar.h"
 
 /***************************************************************************/
 /* FUNCTIONS                                                               */
@@ -29,52 +29,52 @@
 /**
  * @brief initialize bargraph hardware and control structs
  */
-void bar_init()
+void matrixbar_init()
 {
    // initialize bargraph port pins to output, low
-   for(int i = P_BAR_OFFSET; i < P_BAR_RANGE+P_BAR_OFFSET; ++i)
+   for(int i = P_MATRIXBAR_OFFSET; i < P_MATRIXBAR_RANGE+P_MATRIXBAR_OFFSET; ++i)
    {
-      EXP_PORT(P_BAR) &= ~(1 << i);
-      EXP_DDR(P_BAR)  |=  (1 << i);
+      EXP_PORT(P_MATRIXBAR) &= ~(1 << i);
+      EXP_DDR(P_MATRIXBAR)  |=  (1 << i);
    }
 
    // initialize chip select, if defined
-   bar_init_cs();
+   matrixbar_init_cs();
 }
 
 /**
  * @brief set bargraph to defined maximum value
  */
-void bar_set_max(void)
+void matrixbar_set_max(void)
 {
    uint8_t mask = ~0;
-   bar_set_cs();
-   EXP_PORT(P_BAR) |= ~(mask << P_BAR_RANGE);
-   bar_reset_cs();
+   matrixbar_set_cs();
+   EXP_PORT(P_MATRIXBAR) |= ~(mask << P_MATRIXBAR_RANGE);
+   matrixbar_reset_cs();
 }
 
 /**
  * @brief set bargraph to any value
  * @param value - value within range to be set
  */
-void bar_set(uint8_t value)
+void matrixbar_set(uint8_t value)
 {
    // remove old values
-   bar_clear();
-   bar_set_cs();
-   EXP_PORT(P_BAR) |= bar_calc_pins(value);
-   bar_reset_cs();
+   matrixbar_clear();
+   matrixbar_set_cs();
+   EXP_PORT(P_MATRIXBAR) |= matrixbar_calc_pins(value);
+   matrixbar_reset_cs();
 }
 
 /**
  * @brief clear bargraph
  */
-void bar_clear(void)
+void matrixbar_clear(void)
 {
    uint8_t mask = ~0;
-   bar_set_cs();
-   EXP_PORT(P_BAR) &= (mask << P_BAR_RANGE);
-   bar_reset_cs();
+   matrixbar_set_cs();
+   EXP_PORT(P_MATRIXBAR) &= (mask << P_MATRIXBAR_RANGE);
+   matrixbar_reset_cs();
 }
 
 /**
@@ -82,29 +82,29 @@ void bar_clear(void)
  * @param value - value to be calculated/matched within pins to use
  * @return port value to be used directly on port pins
  */
-uint8_t bar_calc_pins(uint8_t value)
+uint8_t matrixbar_calc_pins(uint8_t value)
 {
    uint8_t retVal = 0;
    uint8_t mask   = ~0;
    // divide range with maximum and multiply value to get bargraph steps
-#ifdef BAR_REVERSE
-   uint8_t step = (P_BAR_RANGE * (BAR_MAX_VALUE - value + 1) / BAR_MAX_VALUE);
+#ifdef MATRIXBAR_REVERSE
+   uint8_t step = (P_MATRIXBAR_RANGE * (MATRIXBAR_MAX_VALUE - value + 1) / MATRIXBAR_MAX_VALUE);
 #else
-   uint8_t step = (P_BAR_RANGE * value / BAR_MAX_VALUE);
+   uint8_t step = (P_MATRIXBAR_RANGE * value / MATRIXBAR_MAX_VALUE);
 #endif
    // setup next value, but keep values > MAX out
-   if(value <= BAR_MAX_VALUE)
+   if(value <= MATRIXBAR_MAX_VALUE)
    {
-#ifdef BAR_INVERTED
+#ifdef MATRIXBAR_INVERTED
       // mask out unused bits
-      retVal |= (mask << step) & ~(mask << P_BAR_RANGE);
+      retVal |= (mask << step) & ~(mask << P_MATRIXBAR_RANGE);
 #else
       retVal |= ~(mask << step);
 #endif
    }
 
    // add defined offset
-   retVal <<= P_BAR_OFFSET;
+   retVal <<= P_MATRIXBAR_OFFSET;
 
    return retVal;
 }
@@ -113,17 +113,17 @@ uint8_t bar_calc_pins(uint8_t value)
 /**
  * @brief init chip select, if available
  */
-void bar_init_cs(void)
+void matrixbar_init_cs(void)
 {
-#ifdef P_BAR_CS
+#ifdef P_MATRIXBAR_CS
    // set initial value of chip select port pin
-#ifdef P_BAR_CS_INVERTED
-   SET_PIN(P_BAR_CS);
+#ifdef P_MATRIXBAR_CS_INVERTED
+   SET_PIN(P_MATRIXBAR_CS);
 #else
-   RESET_PIN(P_BAR_CS);
+   RESET_PIN(P_MATRIXBAR_CS);
 #endif
    // setup pin bahaviour
-   PIN_SET_OUTPUT(P_BAR_CS);
+   PIN_SET_OUTPUT(P_MATRIXBAR_CS);
 #endif
 }
 
@@ -132,13 +132,13 @@ void bar_init_cs(void)
  *
  * This is done either set to HIGH level or LOW level, if inverted.
  */
-void bar_set_cs(void)
+void matrixbar_set_cs(void)
 {
-#ifdef P_BAR_CS
-#ifdef P_BAR_CS_INVERTED
-   RESET_PIN(P_BAR_CS);
+#ifdef P_MATRIXBAR_CS
+#ifdef P_MATRIXBAR_CS_INVERTED
+   RESET_PIN(P_MATRIXBAR_CS);
 #else
-   SET_PIN(P_BAR_CS);
+   SET_PIN(P_MATRIXBAR_CS);
 #endif
 #endif
 }
@@ -148,13 +148,13 @@ void bar_set_cs(void)
  *
  * This is done either set to LOW level or HIGH level, if inverted.
  */
-void bar_reset_cs(void)
+void matrixbar_reset_cs(void)
 {
-#ifdef P_BAR_CS
-#ifdef P_BAR_CS_INVERTED
-   SET_PIN(P_BAR_CS);
+#ifdef P_MATRIXBAR_CS
+#ifdef P_MATRIXBAR_CS_INVERTED
+   SET_PIN(P_MATRIXBAR_CS);
 #else
-   RESET_PIN(P_BAR_CS);
+   RESET_PIN(P_MATRIXBAR_CS);
 #endif
 #endif
 }

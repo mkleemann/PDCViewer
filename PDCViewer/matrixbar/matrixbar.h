@@ -11,7 +11,7 @@
  *
  * ----------------------------------------------------------------------------
  *
- * \file bar.h
+ * \file matrixbar.h
  *
  * \date Created: 04.02.2012 21:18:57
  * \author Matthias Kleemann
@@ -19,10 +19,10 @@
 
 
 
-#ifndef BAR_H_
-#define BAR_H_
+#ifndef MATRIXBAR_H_
+#define MATRIXBAR_H_
 
-#include "bar_config.h"
+#include "matrixbar_config.h"
 
 /***************************************************************************/
 /* TYPEDEFS                                                                */
@@ -36,48 +36,48 @@
 /**
  * @brief initialize bargraph hardware and control structs
  */
-void bar_init(void);
+void matrixbar_init(void);
 
 /**
  * @brief set bargraph to defined maximum value
  */
-void bar_set_max(void);
+void matrixbar_set_max(void);
 
 /**
  * @brief set bargraph to any value
  * @param value - value within range to be set
  */
-void bar_set(uint8_t value);
+void matrixbar_set(uint8_t value);
 
 /**
  * @brief clear bargraph
  */
-void bar_clear(void);
+void matrixbar_clear(void);
 
 /**
  * @brief calculate pins to be set
  * @param value - value to be calculated/matched within pins to use
  * @return port value to be used directly on port pins
  */
-uint8_t bar_calc_pins(uint8_t value);
+uint8_t matrixbar_calc_pins(uint8_t value);
 
 /**
  * @brief init chip select, if available
  */
-void bar_init_cs(void);
+void matrixbar_init_cs(void);
 
 /**
  * @brief set chip select, if available
  *
  * This is done either set to HIGH level or LOW level, if inverted.
  */
-void bar_set_cs(void);
+void matrixbar_set_cs(void);
 
 /**
  * @brief reset chip select, if available
  *
  * This is done either set to LOW level or HIGH level, if inverted.
  */
-void bar_reset_cs(void);
+void matrixbar_reset_cs(void);
 
-#endif /* BAR_H_ */
+#endif /* MATRIXBAR_H_ */

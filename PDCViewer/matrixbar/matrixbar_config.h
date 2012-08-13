@@ -11,7 +11,7 @@
  *
  * ----------------------------------------------------------------------------
  *
- * \file bar_config.h
+ * \file matrixbar_config.h
  *
  * \date Created: 04.02.2012 21:18:18
  * \author Matthias Kleemann
@@ -20,8 +20,8 @@
 
 
 
-#ifndef BAR_CONFIG_H_
-#define BAR_CONFIG_H_
+#ifndef MATRIXBAR_CONFIG_H_
+#define MATRIXBAR_CONFIG_H_
 
 /***************************************************************************/
 /* GENERAL CONFIGURATION                                                   */
@@ -31,12 +31,12 @@
  * @brief maximum value which causes all bargraph pins to be high
  *
  * The algorithm used will result in the following match:
- * 0..BAR_MAX_VALUE -> 0..P_BAR_RANGE-1
+ * 0..MATRIXBAR_MAX_VALUE -> 0..P_MATRIXBAR_RANGE-1
  */
-#define BAR_MAX_VALUE   254
+#define MATRIXBAR_MAX_VALUE   254
 
 /**
- * @brief reverse bargraph (MAX -> 0; 0 -> P_BAR_RANGE-1)
+ * @brief reverse bargraph (MAX -> 0; 0 -> P_MATRIXBAR_RANGE-1)
  *
  * Sometimes it is wanted to set all pins when the value is 0, but clear
  * them when the value is near maximum. This is used e.g. in park distance
@@ -44,7 +44,7 @@
  *
  * Comment this defintion to avoid using this feature.
  */
-#define BAR_REVERSE
+#define MATRIXBAR_REVERSE
 
 /**
  * @brief invert bits, e.g. to show value left
@@ -55,9 +55,9 @@
  * Comment this defintion to avoid using this feature.
  */
 #ifdef __DOXYGEN__
-   #define BAR_INVERTED
+   #define MATRIXBAR_INVERTED
 #else
-//#define BAR_INVERTED
+//#define MATRIXBAR_INVERTED
 #endif
 
 /***************************************************************************/
@@ -67,23 +67,23 @@
 /**
  * @brief define port to use for bargraph
  */
-#define P_BAR           C
+#define P_MATRIXBAR           C
 
 /**
  * @brief define range of port used for bargraph
  *
- * The bargraph uses the port pin range (pin 0..P_BAR_RANGE-1). Nothing else
+ * The bargraph uses the port pin range (pin 0..P_MATRIXBAR_RANGE-1). Nothing else
  * should be connected to it than the hardware to use, e.g. LEDs.
  */
-#define P_BAR_RANGE     5
+#define P_MATRIXBAR_RANGE     5
 
 /**
  * @brief adds an offset to the port pins used (not starting at pin0)
  *
- * Note: Adds to P_BAR_RANGE, so P_BAR_OFFSET + P_BAR_RANGE must not
+ * Note: Adds to P_MATRIXBAR_RANGE, so P_MATRIXBAR_OFFSET + P_MATRIXBAR_RANGE must not
  *       exceed port range. Set to 0, if unused.
  */
-#define P_BAR_OFFSET    1
+#define P_MATRIXBAR_OFFSET    1
 
 /**
  * @brief definition of chip select
@@ -94,9 +94,9 @@
  * Comment this defintion to avoid using this feature.
  */
 #ifdef __DOXYGEN__
-   #define P_BAR_CS        D,5
+   #define P_MATRIXBAR_CS        D,5
 #else
-//#define P_BAR_CS        D,5
+//#define P_MATRIXBAR_CS        D,5
 #endif
 
 /**
@@ -108,9 +108,9 @@
  * Comment this defintion to avoid using this feature.
  */
 #ifdef __DOXYGEN__
-   #define P_BAR_CS_INVERTED
+   #define P_MATRIXBAR_CS_INVERTED
 #else
-//#define P_BAR_CS_INVERTED
+//#define P_MATRIXBAR_CS_INVERTED
 #endif
 
 #endif
