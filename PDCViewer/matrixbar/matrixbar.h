@@ -28,56 +28,72 @@
 /* TYPEDEFS                                                                */
 /***************************************************************************/
 
+/**
+ * \brief type for row/column port access
+ */
+typedef struct { //! pointer of data direction register
+                 pvuint8_t ddr;
+                 //! pointer to port register
+                 pvuint8_t port;
+                 //! port pins to be used
+                 uint8_t   pins;
+               } matrixPort_t;
 
 /***************************************************************************/
 /* PROTOTYPES                                                              */
 /***************************************************************************/
 
 /**
- * @brief initialize bargraph hardware and control structs
+ * \brief initialize bargraph hardware and control structs
  */
 void matrixbar_init(void);
 
 /**
- * @brief set bargraph to defined maximum value
+ * \brief set bargraph to defined maximum value for column specified
+ * \param whichColumn - column to use to set row to max
  */
-void matrixbar_set_max(void);
+void matrixbar_set_max(uint8_t whichColumn);
 
 /**
- * @brief set bargraph to any value
- * @param value - value within range to be set
+ * \brief set bargraph to any value
+ * \param value - value within range to be set
+ * \param whichColumn - column to use to set row to max
  */
-void matrixbar_set(uint8_t value);
+void matrixbar_set(uint16_t value, uint8_t whichColumn);
 
 /**
- * @brief clear bargraph
+ * \brief clear bargraph
+ * \param whichColumn - column to use to set row to max
  */
-void matrixbar_clear(void);
+void matrixbar_clear(uint8_t whichColumn);
 
 /**
- * @brief calculate pins to be set
+ * \brief calculate pins to be set
  * @param value - value to be calculated/matched within pins to use
  * @return port value to be used directly on port pins
  */
 uint8_t matrixbar_calc_pins(uint8_t value);
 
 /**
- * @brief init chip select, if available
+ * \brief init columns (chip select)
  */
-void matrixbar_init_cs(void);
+void matrixbar_init_cols(void);
 
 /**
- * @brief set chip select, if available
+ * \brief set column(s)
+ * \param whichColumn - column to use to set row to max
  *
  * This is done either set to HIGH level or LOW level, if inverted.
+ *
  */
-void matrixbar_set_cs(void);
+void matrixbar_set_col(uint8_t whichColumn);
 
 /**
- * @brief reset chip select, if available
+ * \brief reset column(s)
+ * \param whichColumn - column to use to set row to max
  *
  * This is done either set to LOW level or HIGH level, if inverted.
  */
-void matrixbar_reset_cs(void);
+void matrixbar_reset_col(uint8_t whichColumn);
 
 #endif /* MATRIXBAR_H_ */
