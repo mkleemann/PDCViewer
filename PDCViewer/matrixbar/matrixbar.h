@@ -76,13 +76,6 @@ void matrixbar_set(uint16_t value);
 void matrixbar_clear(void);
 
 /**
- * \brief calculate pins to be set
- * @param value - value to be calculated/matched within pins to use
- * @return port value to be used directly on port pins
- */
-uint8_t matrixbar_calc_pins(uint8_t value);
-
-/**
  * \brief set column(s)
  * \param whichColumn - column to use to set row to max
  *

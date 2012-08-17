@@ -124,29 +124,6 @@ void matrixbar_set(uint16_t value)
 {
    // remove old values
    matrixbar_clear();
-//   EXP_PORT(P_MATRIXBAR) |= matrixbar_calc_pins(value);
-}
-
-/**
- * \brief clear bargraph
- */
-void matrixbar_clear()
-{
-   int i;
-
-   for(i = 0; i < MATRIXBAR_NUM_ROWS; ++i)
-   {
-      *(row[i].port) &= ~(row[i].pins);
-   }
-}
-
-/**
- * \brief calculate pins to be set
- * @param value - value to be calculated/matched within pins to use
- * @return port value to be used directly on port pins
- */
-uint8_t matrixbar_calc_pins(uint8_t value)
-{
 #if 0
    uint8_t retVal = 0;
    uint8_t mask   = ~0;
@@ -172,7 +149,19 @@ uint8_t matrixbar_calc_pins(uint8_t value)
 
    return retVal;
 #endif
-   return 0;
+}
+
+/**
+ * \brief clear bargraph
+ */
+void matrixbar_clear()
+{
+   int i;
+
+   for(i = 0; i < MATRIXBAR_NUM_ROWS; ++i)
+   {
+      *(row[i].port) &= ~(row[i].pins);
+   }
 }
 
 
@@ -186,9 +175,9 @@ uint8_t matrixbar_calc_pins(uint8_t value)
 void matrixbar_set_col(uint8_t whichColumn)
 {
 #ifdef P_MATRIXBAR_COL_INVERTED
-  column[whichColumn].port &= ~(column[whichColumn].pins);
+   *(column[columnIdx[whichColumn].idx].port) &= ~(columnIdx[whichColumn].mask);
 #else
-//   SET_PIN(P_MATRIXBAR_CS);
+   *(column[columnIdx[whichColumn].idx].port) |= (columnIdx[whichColumn].mask);
 #endif
 }
 
@@ -201,9 +190,9 @@ void matrixbar_set_col(uint8_t whichColumn)
 void matrixbar_reset_col(uint8_t whichColumn)
 {
 #ifdef P_MATRIXBAR_COL_INVERTED
-//   SET_PIN(P_MATRIXBAR_CS);
+   *(column[columnIdx[whichColumn].idx].port) |= (columnIdx[whichColumn].mask);
 #else
-//   RESET_PIN(P_MATRIXBAR_CS);
+   *(column[columnIdx[whichColumn].idx].port) &= ~(columnIdx[whichColumn].mask);
 #endif
 }
 
