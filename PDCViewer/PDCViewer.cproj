@@ -21,6 +21,23 @@
     <OverrideVtorValue />
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfVersion>3.1.3</AsfVersion>
+    <avrtoolinterface />
+    <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
+    <com_atmel_avrdbg_tool_simulator>
+      <ToolType xmlns="">com.atmel.avrdbg.tool.simulator</ToolType>
+      <ToolName xmlns="">AVR Simulator</ToolName>
+      <ToolNumber xmlns="">
+      </ToolNumber>
+      <KeepTimersRunning xmlns="">true</KeepTimersRunning>
+      <OverrideVtor xmlns="">false</OverrideVtor>
+      <OverrideVtorValue xmlns="">
+      </OverrideVtorValue>
+      <Channel xmlns="">
+        <host>127.0.0.1</host>
+        <port>1474</port>
+        <ssl>False</ssl>
+      </Channel>
+    </com_atmel_avrdbg_tool_simulator>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -87,15 +104,6 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="bar\bar.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="bar\bar.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="bar\bar_config.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="can\can_config_mcp2515.h">
       <SubType>compile</SubType>
     </Compile>
@@ -121,6 +129,15 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="can\can_sleep_mcp2515.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="matrixbar\matrixbar.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="matrixbar\matrixbar.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="matrixbar\matrixbar_config.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="PDCViewer.c">
@@ -152,16 +169,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="bar" />
     <Folder Include="can" />
+    <Folder Include="matrixbar" />
     <Folder Include="spi" />
     <Folder Include="timer" />
     <Folder Include="util" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bar\bar.dox">
-      <SubType>compile</SubType>
-    </None>
     <None Include="can\can_mcp2515.dox">
       <SubType>compile</SubType>
     </None>
@@ -172,6 +186,9 @@
       <SubType>compile</SubType>
     </None>
     <None Include="Makefile">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="matrixbar\matrixbar.dox">
       <SubType>compile</SubType>
     </None>
     <None Include="spi\spi.dox">
