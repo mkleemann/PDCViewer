@@ -92,4 +92,11 @@ void matrixbar_set_col(uint8_t whichColumn);
  */
 void matrixbar_reset_col(uint8_t whichColumn);
 
+/**
+ * \brief get highest bit set
+ * \param value - value to be evaluated
+ * \return number of highest bit set
+ */
+uint8_t matrixbar_get_hbs(uint16_t value);
+
 #endif /* MATRIXBAR_H_ */

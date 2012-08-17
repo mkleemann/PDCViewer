@@ -54,9 +54,25 @@ uint16_t       numPinsInCol                     = 0;
  *
  * The maximum index is determined of number of ports used and the maximum
  * of 8 pins per port on a regular ATmega (MATRIXBAR_NUM_COLS * 8).
+ *
+ * \see MATRIXBAR_NUM_COLS
+ * \see rowIdx
  */
 matrixColumn_t columnIdx[MATRIXBAR_NUM_COLS * 8];
 
+/**
+ * \brief rows indexed
+ *
+ * To access a row simply by a number a mask for port/pin combination
+ * needs to be known. This is set up in this array.
+ *
+ * The maximum index is determined of number of ports used and the maximum
+ * of 8 pins per port on a regular ATmega (MATRIXBAR_NUM_ROWS * 8).
+ *
+ * \see MATRIXBAR_NUM_ROWS
+ * \see columnIdx
+ */
+matrixColumn_t rowIdx[MATRIXBAR_NUM_ROWS * 8];
 
 /***************************************************************************/
 /* FUNCTIONS                                                               */
@@ -78,6 +94,8 @@ void matrixbar_init()
       {
          if(1 == ((row[i].pins >> j) & 0x01))
          {
+            rowIdx[numPinsInRow].idx   = i;
+            rowIdx[numPinsInRow].mask  = (1 << j);
             ++numPinsInRow;
          }
       }
@@ -93,7 +111,7 @@ void matrixbar_init()
       *(column[i].ddr)  |= column[i].pins;
       for(j = 0; j < 8; ++j)
       {
-         if(1 == (column[i].pins & (1 << j)))
+         if(0 != (column[i].pins & (1 << j)))
          {
             columnIdx[numPinsInCol].idx   = i;
             columnIdx[numPinsInCol].mask  = (1 << j);
@@ -122,33 +140,36 @@ void matrixbar_set_max(void)
  */
 void matrixbar_set(uint16_t value)
 {
-   // remove old values
-   matrixbar_clear();
-#if 0
-   uint8_t retVal = 0;
-   uint8_t mask   = ~0;
+   uint16_t mask   = ~0;
+   uint16_t setVal = 0;
+   uint16_t idxMax = 0;
+   uint8_t  i;
+
    // divide range with maximum and multiply value to get bargraph steps
 #ifdef MATRIXBAR_REVERSE
-   uint8_t step = (P_MATRIXBAR_RANGE * (MATRIXBAR_MAX_VALUE - value + 1) / MATRIXBAR_MAX_VALUE);
+   uint16_t step = (numPinsInRow * (MATRIXBAR_MAX_VALUE - value + 1) / MATRIXBAR_MAX_VALUE);
 #else
-   uint8_t step = (P_MATRIXBAR_RANGE * value / MATRIXBAR_MAX_VALUE);
+   uint16_t step = (numPinsInRow * value / MATRIXBAR_MAX_VALUE);
 #endif
    // setup next value, but keep values > MAX out
    if(value <= MATRIXBAR_MAX_VALUE)
    {
 #ifdef MATRIXBAR_INVERTED
       // mask out unused bits
-      retVal |= (mask << step) & ~(mask << P_MATRIXBAR_RANGE);
+      setVal |= (mask << step) & ~(mask << numPinsInRow);
 #else
-      retVal |= ~(mask << step);
+      setVal |= ~(mask << step);
 #endif
    }
 
-   // add defined offset
-   retVal <<= P_MATRIXBAR_OFFSET;
+   // remove old values
+   matrixbar_clear();
 
-   return retVal;
-#endif
+   idxMax = matrixbar_get_hbs(setVal);
+   for(i = 0; i < idxMax; ++i)
+   {
+      *(row[rowIdx[i].idx].port) |= rowIdx[i].mask;
+   }
 }
 
 /**
@@ -194,5 +215,22 @@ void matrixbar_reset_col(uint8_t whichColumn)
 #else
    *(column[columnIdx[whichColumn].idx].port) &= ~(columnIdx[whichColumn].mask);
 #endif
+}
+
+/**
+ * \brief get highest bit set
+ * \param value - value to be evaluated
+ * \return number of highest bit set
+ */
+uint8_t matrixbar_get_hbs(uint16_t value)
+{
+   int retVal = 0;
+
+   while(0 != (value & (1 << retVal)))
+   {
+      ++retVal;
+   }
+
+   return retVal;
 }
 
