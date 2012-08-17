@@ -29,6 +29,7 @@
 #include "spi/spi.h"
 #include "can/can_mcp2515.h"
 #include "timer/timer.h"
+#include "matrixbar/matrixbar.h"
 #include "PDCViewer.h"
 
 // === GLOBALS ===============================================================
@@ -282,6 +283,9 @@ void initHardware(void)
    spi_pin_init();
    spi_master_init();
 #endif
+
+   // init matrix bargraph
+   matrixbar_init();
 
    // set wakeup interrupt trigger on low level
    MCUCR |= EXTERNAL_INT0_TRIGGER;
