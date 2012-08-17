@@ -29,12 +29,33 @@
 /**
  * \brief port access to rows
  */
-matrixPort_t row[MATRIXBAR_NUM_ROWS]      = { P_MATRIXBAR_ROW };
+matrixPort_t   row[MATRIXBAR_NUM_ROWS]          = { P_MATRIXBAR_ROW };
 
 /**
  * \brief port access to columns
  */
-matrixPort_t column[MATRIXBAR_NUM_COLS]   = { P_MATRIXBAR_COL };
+matrixPort_t   column[MATRIXBAR_NUM_COLS]       = { P_MATRIXBAR_COL };
+
+/**
+ * \brief number of pins in a row defined
+ */
+uint16_t       numPinsInRow                     = 0;
+
+/**
+ * \brief number of pins in a columns defined
+ */
+uint16_t       numPinsInCol                     = 0;
+
+/**
+ * \brief columns indexed
+ *
+ * To access a column simply by a number a mask for port/pin combination
+ * needs to be known. This is set up in this array.
+ *
+ * The maximum index is determined of number of ports used and the maximum
+ * of 8 pins per port on a regular ATmega (MATRIXBAR_NUM_COLS * 8).
+ */
+matrixColumn_t columnIdx[MATRIXBAR_NUM_COLS * 8];
 
 
 /***************************************************************************/
@@ -46,57 +67,77 @@ matrixPort_t column[MATRIXBAR_NUM_COLS]   = { P_MATRIXBAR_COL };
  */
 void matrixbar_init()
 {
-   int i;
+   int i, j;
    // initialize bargraph port pins to output, low
+   // rows
    for(i = 0; i < MATRIXBAR_NUM_ROWS; ++i)
    {
       *(row[i].port) &= ~(row[i].pins);
       *(row[i].ddr)  |= row[i].pins;
+      for(j = 0; j < 8; ++j)
+      {
+         if(1 == ((row[i].pins >> j) & 0x01))
+         {
+            ++numPinsInRow;
+         }
+      }
    }
+   // columns
    for(i = 0; i < MATRIXBAR_NUM_COLS; ++i)
    {
+#ifdef P_MATRIXBAR_COL_INVERTED
+      *(column[i].port) |= column[i].pins;
+#else
       *(column[i].port) &= ~(column[i].pins);
+#endif
       *(column[i].ddr)  |= column[i].pins;
+      for(j = 0; j < 8; ++j)
+      {
+         if(1 == (column[i].pins & (1 << j)))
+         {
+            columnIdx[numPinsInCol].idx   = i;
+            columnIdx[numPinsInCol].mask  = (1 << j);
+            ++numPinsInCol;
+         }
+      }
    }
-
-   // initialize columns ports/pins
-   matrixbar_init_cols();
 }
 
 /**
  * \brief set bargraph to defined maximum value for column specified
- * \param whichColumn - column to use to set row to max
  */
-void matrixbar_set_max(uint8_t whichColumn)
+void matrixbar_set_max(void)
 {
-   matrixbar_set_col(whichColumn);
-//   EXP_PORT(P_MATRIXBAR) |= ~(mask << P_MATRIXBAR_RANGE);
-   matrixbar_reset_col(whichColumn);
+   int i;
+
+   for(i = 0; i < MATRIXBAR_NUM_ROWS; ++i)
+   {
+      *(row[i].port) |= row[i].pins;
+   }
 }
 
 /**
  * \brief set bargraph to any value
  * \param value - value within range to be set
- * \param whichColumn - column to use to set row to max
  */
-void matrixbar_set(uint16_t value, uint8_t whichColumn)
+void matrixbar_set(uint16_t value)
 {
    // remove old values
-   matrixbar_clear(whichColumn);
-   matrixbar_set_col(whichColumn);
+   matrixbar_clear();
 //   EXP_PORT(P_MATRIXBAR) |= matrixbar_calc_pins(value);
-   matrixbar_reset_col(whichColumn);
 }
 
 /**
  * \brief clear bargraph
- * \param whichColumn - column to use to set row to max
  */
-void matrixbar_clear(uint8_t whichColumn)
+void matrixbar_clear()
 {
-   matrixbar_set_col(whichColumn);
-//   EXP_PORT(P_MATRIXBAR) &= (mask << P_MATRIXBAR_RANGE);
-   matrixbar_reset_col(whichColumn);
+   int i;
+
+   for(i = 0; i < MATRIXBAR_NUM_ROWS; ++i)
+   {
+      *(row[i].port) &= ~(row[i].pins);
+   }
 }
 
 /**
@@ -106,6 +147,7 @@ void matrixbar_clear(uint8_t whichColumn)
  */
 uint8_t matrixbar_calc_pins(uint8_t value)
 {
+#if 0
    uint8_t retVal = 0;
    uint8_t mask   = ~0;
    // divide range with maximum and multiply value to get bargraph steps
@@ -129,25 +171,10 @@ uint8_t matrixbar_calc_pins(uint8_t value)
    retVal <<= P_MATRIXBAR_OFFSET;
 
    return retVal;
+#endif
+   return 0;
 }
 
-
-/**
- * \brief init columns (chip select)
- */
-void matrixbar_init_cols(void)
-{
-#ifdef P_MATRIXBAR_CS
-   // set initial value of chip select port pin
-#ifdef P_MATRIXBAR_CS_INVERTED
-   SET_PIN(P_MATRIXBAR_CS);
-#else
-   RESET_PIN(P_MATRIXBAR_CS);
-#endif
-   // setup pin bahaviour
-   PIN_SET_OUTPUT(P_MATRIXBAR_CS);
-#endif
-}
 
 /**
  * \brief set column(s)
@@ -158,12 +185,10 @@ void matrixbar_init_cols(void)
  */
 void matrixbar_set_col(uint8_t whichColumn)
 {
-#ifdef P_MATRIXBAR_CS
-#ifdef P_MATRIXBAR_CS_INVERTED
-   RESET_PIN(P_MATRIXBAR_CS);
+#ifdef P_MATRIXBAR_COL_INVERTED
+  column[whichColumn].port &= ~(column[whichColumn].pins);
 #else
-   SET_PIN(P_MATRIXBAR_CS);
-#endif
+//   SET_PIN(P_MATRIXBAR_CS);
 #endif
 }
 
@@ -175,12 +200,10 @@ void matrixbar_set_col(uint8_t whichColumn)
  */
 void matrixbar_reset_col(uint8_t whichColumn)
 {
-#ifdef P_MATRIXBAR_CS
-#ifdef P_MATRIXBAR_CS_INVERTED
-   SET_PIN(P_MATRIXBAR_CS);
+#ifdef P_MATRIXBAR_COL_INVERTED
+//   SET_PIN(P_MATRIXBAR_CS);
 #else
-   RESET_PIN(P_MATRIXBAR_CS);
-#endif
+//   RESET_PIN(P_MATRIXBAR_CS);
 #endif
 }
 

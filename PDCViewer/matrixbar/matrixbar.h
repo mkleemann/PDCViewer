@@ -39,6 +39,17 @@ typedef struct { //! pointer of data direction register
                  uint8_t   pins;
                } matrixPort_t;
 
+/**
+ * \brief access type for column by number/index
+ */
+typedef struct { //! index in port array
+                 //! \see P_MATRIXBAR_COL
+                 //! \see matrixPort_t
+                 uint8_t   idx;
+                 //! mask of bit used on port
+                 uint8_t   mask;
+               } matrixColumn_t;
+
 /***************************************************************************/
 /* PROTOTYPES                                                              */
 /***************************************************************************/
@@ -50,22 +61,19 @@ void matrixbar_init(void);
 
 /**
  * \brief set bargraph to defined maximum value for column specified
- * \param whichColumn - column to use to set row to max
  */
-void matrixbar_set_max(uint8_t whichColumn);
+void matrixbar_set_max(void);
 
 /**
  * \brief set bargraph to any value
  * \param value - value within range to be set
- * \param whichColumn - column to use to set row to max
  */
-void matrixbar_set(uint16_t value, uint8_t whichColumn);
+void matrixbar_set(uint16_t value);
 
 /**
  * \brief clear bargraph
- * \param whichColumn - column to use to set row to max
  */
-void matrixbar_clear(uint8_t whichColumn);
+void matrixbar_clear(void);
 
 /**
  * \brief calculate pins to be set
@@ -73,11 +81,6 @@ void matrixbar_clear(uint8_t whichColumn);
  * @return port value to be used directly on port pins
  */
 uint8_t matrixbar_calc_pins(uint8_t value);
-
-/**
- * \brief init columns (chip select)
- */
-void matrixbar_init_cols(void);
 
 /**
  * \brief set column(s)
