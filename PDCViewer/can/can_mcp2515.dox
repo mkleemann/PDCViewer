@@ -14,17 +14,14 @@
  *
  * Thanks!
  *
- * \section can_reason Reason for Dual CAN
+ * \section can_reason Reason for CAN
  *
  * Since new cars come with CAN bus to control anything, the need to use these
  * signals arose when trying to build in my old CAN controlled radio.
  *
- * Single CAN solutions exist, but often they lack in something or other. So I
- * used the tips and tricks to combine such solutions.
- *
- * Both CAN buses (could) use a different bitrate. Only a small number of
- * signals are needed to communicate between buses. Sleep and/or power down
- * functionality is a must, if you don't want to help your car waking up after
- * a weekend. Of course, if you have access to other information, make use of
- * it.
+ * The CAN bus used is a infotainment CAN with all needed signals to provide
+ * a working base. Only a small number of signals are needed. Sleep and/or
+ * power down functionality is a must, if you don't want to help your car
+ * waking up after a weekend. Of course, if you have access to other
+ * information, make use of it.
  */
