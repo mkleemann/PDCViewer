@@ -44,7 +44,8 @@
  *
  * The state of the FSM is set and read from here.
  */
-static volatile state_t fsmState     = INIT;
+static volatile state_t fsmState       = INIT;
+static volatile uint8_t columnInUse    = 0;
 
 
 // === MAIN LOOP =============================================================
@@ -215,6 +216,10 @@ void run(void)
    }
 #else
    // testing w/o CAN
+   matrixbar_reset_col(++columnInUse);
+   matrixbar_set(columnInUse);
+   matrixbar_set_col(columnInUse);
+
 
    // reset timer counter
    setTimer1Count(0);
@@ -289,6 +294,10 @@ void initHardware(void)
 
    // set wakeup interrupt trigger on low level
    MCUCR |= EXTERNAL_INT0_TRIGGER;
+
+#ifdef ___NO_CAN___
+   fsmState = RUNNING;
+#endif
 }
 
 /**
@@ -303,6 +312,8 @@ void initHardware(void)
  */
 bool initCAN(void)
 {
-   return can_init_mcp2515(CAN_CHIP1, CAN_BITRATE_100_KBPS, LISTEN_ONLY_MODE);
+   bool retVal = can_init_mcp2515(CAN_CHIP1, CAN_BITRATE_100_KBPS, LISTEN_ONLY_MODE);
+   fsmState = RUNNING;
+   return retVal;
 }
 
