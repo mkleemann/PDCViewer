@@ -86,7 +86,7 @@ void matrixbar_set_col(uint8_t whichColumn);
 
 /**
  * \brief reset column(s)
- * \param whichColumn - column to use to set row to max
+ * \param whichColumn - column to use
  *
  * This is done either set to LOW level or HIGH level, if inverted.
  */

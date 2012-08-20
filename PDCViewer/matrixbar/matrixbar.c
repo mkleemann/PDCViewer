@@ -188,17 +188,19 @@ void matrixbar_clear()
 
 /**
  * \brief set column(s)
- * \param whichColumn - column to use to set row to max
+ * \param whichColumn - column to use
  *
  * This is done either set to HIGH level or LOW level, if inverted.
  *
  */
 void matrixbar_set_col(uint8_t whichColumn)
 {
+   // sanitize entry
+   uint8_t realCol = whichColumn % numPinsInCol;
 #ifdef P_MATRIXBAR_COL_INVERTED
-   *(column[columnIdx[whichColumn].idx].port) &= ~(columnIdx[whichColumn].mask);
+   *(column[columnIdx[realCol].idx].port) &= ~(columnIdx[realCol].mask);
 #else
-   *(column[columnIdx[whichColumn].idx].port) |= (columnIdx[whichColumn].mask);
+   *(column[columnIdx[realCol].idx].port) |= (columnIdx[realCol].mask);
 #endif
 }
 
@@ -210,10 +212,12 @@ void matrixbar_set_col(uint8_t whichColumn)
  */
 void matrixbar_reset_col(uint8_t whichColumn)
 {
+   // sanitize entry
+   uint8_t realCol = whichColumn % numPinsInCol;
 #ifdef P_MATRIXBAR_COL_INVERTED
-   *(column[columnIdx[whichColumn].idx].port) |= (columnIdx[whichColumn].mask);
+   *(column[columnIdx[realCol].idx].port) |= (columnIdx[realCol].mask);
 #else
-   *(column[columnIdx[whichColumn].idx].port) &= ~(columnIdx[whichColumn].mask);
+   *(column[columnIdx[realCol].idx].port) &= ~(columnIdx[realCol].mask);
 #endif
 }
 
