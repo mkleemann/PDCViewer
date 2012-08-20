@@ -45,8 +45,27 @@
  * The state of the FSM is set and read from here.
  */
 static volatile state_t fsmState       = INIT;
+
+/**
+ * \brief set current column
+ */
 static volatile uint8_t columnInUse    = 0;
 
+/**
+ * \brief save input values to show
+ * \note The struct isn't really necessary, but makes it easier to provide
+ * simple add-ons.
+ */
+typedef struct
+{
+   //! array of PDC values to save
+   uint8_t  sensorVal[MATRIXBAR_NUM_COLS];
+} storage_t;
+
+/**
+ * \brief storage of values in use
+ */
+static volatile storage_t storage;
 
 // === MAIN LOOP =============================================================
 
@@ -217,9 +236,8 @@ void run(void)
 #else
    // testing w/o CAN
    matrixbar_reset_col(++columnInUse);
-   matrixbar_set(columnInUse);
+   matrixbar_set(storage.sensorVal[columnInUse % MATRIXBAR_NUM_COLS]);
    matrixbar_set_col(columnInUse);
-
 
    // reset timer counter
    setTimer1Count(0);
@@ -280,6 +298,8 @@ ISR(INT0_vect)
  */
 void initHardware(void)
 {
+   int i;
+
    // set timer for bussleep detection
    initTimer1(TimerCompare);
 
@@ -289,6 +309,12 @@ void initHardware(void)
    spi_master_init();
 #endif
 
+   // set storage to initial values
+   for(i = 0; i < MATRIXBAR_NUM_COLS; ++i)
+   {
+      storage.sensorVal[i] = PDC_OUT_OF_RANGE;
+   }
+
    // init matrix bargraph
    matrixbar_init();
 
@@ -296,6 +322,7 @@ void initHardware(void)
    MCUCR |= EXTERNAL_INT0_TRIGGER;
 
 #ifdef ___NO_CAN___
+   // It's not done in initCAN()!
    fsmState = RUNNING;
 #endif
 }
@@ -313,6 +340,8 @@ void initHardware(void)
 bool initCAN(void)
 {
    bool retVal = can_init_mcp2515(CAN_CHIP1, CAN_BITRATE_100_KBPS, LISTEN_ONLY_MODE);
+   // If an error roccurs, the main loop is not started, so it's ok to set
+   // the state here.
    fsmState = RUNNING;
    return retVal;
 }

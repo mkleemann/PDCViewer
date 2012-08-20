@@ -41,6 +41,11 @@
  */
 #define EXTERNAL_INT0_ENABLE     (1 << INT0)
 
+/**
+ * \brief maximum PDC value (nothing in range)
+ */
+ #define PDC_OUT_OF_RANGE        255
+
 
 // === TYPE DEFINITIONS ======================================================
 
