@@ -37,7 +37,7 @@
 /**
  * \brief testing w/o CAN
  */
-#define ___NO_CAN___
+//#define ___NO_CAN___
 
 /**
  * \brief current state of FSM
@@ -220,7 +220,8 @@ void wakeUp(void)
 void run(void)
 {
 #ifndef ___NO_CAN___
-   can_t msg;
+   can_t    msg;
+   uint8_t  i, idx;
 
    if (can_check_message_received(CAN_CHIP1))
    {
@@ -230,7 +231,21 @@ void run(void)
          // reset timer counter, since there is activity on master CAN bus
          setTimer1Count(0);
 
-         // fetch information from CAN1
+         // fetch information from CAN
+         if((PDC_CAN_ID == msg.msgId) && (0 == msg.header.rtr))
+         {
+            // fetch only rear sensors
+            for(i = 0; i < PDC_CAN_MSG_LENGTH; ++i)
+            {
+               // bytes 2/3/6/7 match to 0..3 (num of matrix columns)
+               // 2-0 0010-0000 0 1
+               // 3-1 0011-0001 1 1
+               // 6-2 0110-0010 0 3
+               // 7-3 0111-0011 1 3
+               idx = i/2 + i%2;
+               storage.sensorVal[i] = msg.data[idx];
+            }
+         }
       }
    }
 #else

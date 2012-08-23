@@ -44,7 +44,33 @@
 /**
  * \brief maximum PDC value (nothing in range)
  */
- #define PDC_OUT_OF_RANGE        255
+#define PDC_OUT_OF_RANGE         255
+
+/**
+ * \brief define CAN id for PDC data
+ *
+ * Length of CAN message is 8 bytes. The 8 bytes are the values of different
+ * PDC sensors. The range is 0..254 in cm distance to any object near the
+ * sensor and 255 for "no object in range".
+ *
+ * \code
+ * byte  sensor
+ * 0     front left
+ * 1     front right
+ * 2     rear left
+ * 3     rear right
+ * 4     front mid left
+ * 5     front mid right
+ * 6     rear mid left
+ * 7     rear mid right
+ * \endcode
+ */
+#define PDC_CAN_ID               0x54B
+
+/**
+ * \brief define message length of CAN
+ */
+#define PDC_CAN_MSG_LENGTH       8
 
 
 // === TYPE DEFINITIONS ======================================================
