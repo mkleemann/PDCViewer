@@ -45,7 +45,7 @@
  *
  * \see P_MATRIXBAR_COL
  */
-#define MATRIXBAR_NUM_COLS    1
+#define MATRIXBAR_NUM_COLS    4
 
 /**
  * \brief maximum value which causes all bargraph pins to be high
@@ -132,7 +132,7 @@
  *
  * \see P_MATRIXBAR_ROW
  */
-#define P_MATRIXBAR_COL       {&DDR(B), &PORT(B), 0x02}
+#define P_MATRIXBAR_COL       {&DDR(D), &PORT(D), 0x0F}
 
 /**
  * \def P_MATRIXBAR_COL_INVERTED

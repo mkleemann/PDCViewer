@@ -37,7 +37,7 @@
 /**
  * \brief testing w/o CAN
  */
-//#define ___NO_CAN___
+#define ___NO_CAN___
 
 /**
  * \brief current state of FSM
@@ -78,6 +78,24 @@ static volatile storage_t storage;
  **/
 int __attribute__((OS_main)) main(void)
 {
+   uint8_t i, idx;
+   uint8_t vals[8] = {8, 4, 2, 1, 15, 7, 5, 3};
+   // fetch only rear sensors
+   for(i = 0; i < PDC_CAN_MSG_LENGTH; ++i)
+   {
+      // bytes 2/3/6/7 match to 0..3 (num of matrix columns)
+      // 0->2 0000->0010 0 0
+      // 1->3 0001->0011 1 0
+      // 2->6 0010->0110 0 1
+      // 3->7 0011->0111 1 1
+     if(i & 0x2)
+     {
+        idx = (i & 1) + ((i & 4) >> 1);
+        storage.sensorVal[idx] =  vals[i];
+     }
+   }
+
+
    initHardware();
 
 #ifndef ___NO_CAN___
@@ -232,18 +250,23 @@ void run(void)
          setTimer1Count(0);
 
          // fetch information from CAN
-         if((PDC_CAN_ID == msg.msgId) && (0 == msg.header.rtr))
+         if ((PDC_CAN_ID == msg.msgId) && (0 == msg.header.rtr))
          {
             // fetch only rear sensors
-            for(i = 0; i < PDC_CAN_MSG_LENGTH; ++i)
+            for (i = 0; i < PDC_CAN_MSG_LENGTH; ++i)
             {
                // bytes 2/3/6/7 match to 0..3 (num of matrix columns)
-               // 2-0 0010-0000 0 1
-               // 3-1 0011-0001 1 1
-               // 6-2 0110-0010 0 3
-               // 7-3 0111-0011 1 3
-               idx = i/2 + i%2;
-               storage.sensorVal[i] = msg.data[idx];
+               // 0<-2 0000<-0010
+               // 1<-3 0001<-0011
+               // 2<-6 0010<-0110
+               // 3<-7 0011<-0111
+               // only get values, if bit 1 is not set
+               if (i & 0x02)
+               {
+                  // index is bit 0 + (bit 2 >> 1)
+                  idx = (i & 0x01) + ((i & 0x04) >> 1);
+                  storage.sensorVal[idx] =  vals[i];
+               }
             }
          }
       }
