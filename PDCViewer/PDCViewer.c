@@ -236,7 +236,7 @@ void run(void)
          if ((PDC_CAN_ID == msg.msgId) && (0 == msg.header.rtr))
          {
             // fetch only rear sensors
-            for (i = 0; i < PDC_CAN_MSG_LENGTH; ++i)
+            for (i = 0; i < msg.header.len; ++i)
             {
                // bytes 2/3/6/7 match to 0..3 (num of matrix columns)
                // 0<-2 0000<-0010

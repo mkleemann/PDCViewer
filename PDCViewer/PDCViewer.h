@@ -67,11 +67,6 @@
  */
 #define PDC_CAN_ID               0x54B
 
-/**
- * \brief define message length of CAN
- */
-#define PDC_CAN_MSG_LENGTH       8
-
 
 // === TYPE DEFINITIONS ======================================================
 
