@@ -157,6 +157,20 @@ void write_register_mcp2515(eChipSelect   chip,
                             uint8_t       address,
                             uint8_t       data);
 
+
+/**
+ * \brief  write sequential to MCP2515 registers
+ *
+ * \param  chip      - select chip to use
+ * \param  length    - length of buffer
+ * \param  address   - register address of MCP2515 (start)
+ * \param  data      - data buffer
+ */
+void write_multi_registers_mcp2515(eChipSelect   chip,
+                                   uint8_t       length,
+                                   uint8_t       address,
+                                   uint8_t*      data);
+
 /**
  * @brief  read from MCP2515 registers
  *

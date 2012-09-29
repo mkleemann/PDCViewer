@@ -35,7 +35,7 @@
 
 
 /**
- * @brief internal CAN bitrate setup
+ * \brief internal CAN bitrate setup
  *
  * These values are based on 4Mhz oscillator frequency. Higher CAN bitrates
  * may need a higher clock frequency (bus idle time - see datasheet).
@@ -58,7 +58,7 @@ static uint8_t  mcp2515_cnf[NUM_OF_CAN_BITRATES][3] = {
 };
 
 /**
- * @brief  initializes MCP2515 selected
+ * \brief  initializes MCP2515 selected
  *
  * \par Clock Speed
  * All MCP2515 connected to AVR need to have the same clock speed when
@@ -67,10 +67,10 @@ static uint8_t  mcp2515_cnf[NUM_OF_CAN_BITRATES][3] = {
  * \par SPI
  * MCP2515 init routine does NOT initializes SPI. This has to be done before.
  *
- * @param  chip      - select chip to use
- * @param  bitrate   - CAN bitrate of chip selected
- * @param  mode      - mode of operation of MCP2515 after init
- * @return true if ok, false if error
+ * \param  chip      - select chip to use
+ * \param  bitrate   - CAN bitrate of chip selected
+ * \param  mode      - mode of operation of MCP2515 after init
+ * \return true if ok, false if error
  */
 bool can_init_mcp2515(eChipSelect chip,
                       eCanBitRate bitrate,
@@ -138,11 +138,11 @@ bool can_init_mcp2515(eChipSelect chip,
 }
 
 /**
- * @brief  write to MCP2515 registers
+ * \brief  write to MCP2515 registers
  *
- * @param  chip      - select chip to use
- * @param  address   - register address of MCP2515
- * @param  data      - data byte
+ * \param  chip      - select chip to use
+ * \param  address   - register address of MCP2515
+ * \param  data      - data byte
  */
 void write_register_mcp2515(eChipSelect   chip,
                             uint8_t       address,
@@ -159,13 +159,42 @@ void write_register_mcp2515(eChipSelect   chip,
    set_chip_select(chip);
 }
 
+/**
+ * \brief  write sequential to MCP2515 registers
+ *
+ * \param  chip      - select chip to use
+ * \param  length    - length of buffer
+ * \param  address   - register address of MCP2515 (start)
+ * \param  data      - data buffer
+ */
+void write_multi_registers_mcp2515(eChipSelect   chip,
+                                   uint8_t       length,
+                                   uint8_t       address,
+                                   uint8_t*      data)
+{
+   uint8_t i;
+
+   // /CS of MCP2515 to Low
+   unset_chip_select(chip);
+
+   spi_putc(MCP2515_WRITE);
+   spi_putc(address);
+   for(i = 0; i < length; ++i)
+   {
+      spi_putc(data[i]);
+   }
+
+   // /CS of MCP2515 to High
+   set_chip_select(chip);
+}
+
 
 /**
- * @brief  read from MCP2515 registers
+ * \brief  read from MCP2515 registers
  *
- * @param  chip      - select chip to use
- * @param  address   - register address of MCP2515
- * @return data      - data byte
+ * \param  chip      - select chip to use
+ * \param  address   - register address of MCP2515
+ * \return data      - data byte
  */
 uint8_t read_register_mcp2515(eChipSelect chip,
                               uint8_t     address)
@@ -188,15 +217,15 @@ uint8_t read_register_mcp2515(eChipSelect chip,
 
 
 /**
- * @brief  write masked bits to MCP2515 registers
+ * \brief  write masked bits to MCP2515 registers
  *
  * Note: Not all registers are able to provide this functionality. Mostly
  *       configuration registers do. Read the datasheet for details.
  *
- * @param  chip      - select chip to use
- * @param  address   - register address of MCP2515
- * @param  mask      - bit mask for modify
- * @param  data      - data byte
+ * \param  chip      - select chip to use
+ * \param  address   - register address of MCP2515
+ * \param  mask      - bit mask for modify
+ * \param  data      - data byte
  */
 void bit_modify_mcp2515(eChipSelect chip,
                         uint8_t     address,
@@ -216,11 +245,11 @@ void bit_modify_mcp2515(eChipSelect chip,
 }
 
 /**
- * @brief  reads MCP2515 status registers
+ * \brief  reads MCP2515 status registers
  *
- * @param  chip    - select chip to use
- * @param  command - read quick status command of MCP2515
- * @return value of status register
+ * \param  chip    - select chip to use
+ * \param  command - read quick status command of MCP2515
+ * \return value of status register
  */
 uint8_t read_status_mcp2515(eChipSelect  chip,
                             uint8_t      command)
@@ -243,10 +272,10 @@ uint8_t read_status_mcp2515(eChipSelect  chip,
 
 
 /**
- * @brief  set MCP2515 mode of operation
+ * \brief  set MCP2515 mode of operation
  *
- * @param  chip - select chip to use
- * @param  mode - mode of operation of MCP2515
+ * \param  chip - select chip to use
+ * \param  mode - mode of operation of MCP2515
  */
 void set_mode_mcp2515(eChipSelect   chip,
                       uint8_t       mode)
@@ -293,46 +322,80 @@ void set_mode_mcp2515(eChipSelect   chip,
 /***************************************************************************/
 
 /**
- * @brief setting up the interrupt pins
- * @param  chip - select chip to use
+ * \brief setting up the interrupt pins
+ * \param  chip - select chip to use
  */
 void setup_interrupt_pins(eChipSelect chip)
 {
-   // set interrupt pin to input and internal pull-up resistor
-   PIN_SET_PULLUP(CHIP1_INT_PIN);
+   if(CAN_CHIP1 == chip)
+   {
+      // set interrupt pin to input and internal pull-up resistor
+      PIN_SET_PULLUP(CHIP1_INT_PIN);
+   }
+   else
+   {
+      // set interrupt pin to input and internal pull-up resistor
+      PIN_SET_PULLUP(CHIP2_INT_PIN);
+   }
 }
 
 /**
- * @brief setting up the chip select pins
- * @param chip selected
+ * \brief setting up the chip select pins
+ * \param chip selected
  */
 void setup_cs_pins(eChipSelect chip)
 {
-   // set chip select pins to high to get transition for MCP2515
-   SET_PIN(CHIP1_CS_PIN);
-   // set /CS to output
-   PIN_SET_OUTPUT(CHIP1_CS_PIN);
+   if(CAN_CHIP1 == chip)
+   {
+      // set chip select pins to high to get transition for MCP2515
+      SET_PIN(CHIP1_CS_PIN);
+      // set /CS to output
+      PIN_SET_OUTPUT(CHIP1_CS_PIN);
+   }
+   else
+   {
+      // set chip select pins to high to get transition for MCP2515
+      SET_PIN(CHIP2_CS_PIN);
+      // set /CS to output
+      PIN_SET_OUTPUT(CHIP2_CS_PIN);
+   }
 }
 
 
 /**
- * @brief set chip select for the right chip
- * @param  chip - select chip to use
+ * \brief set chip select for the right chip
+ * \param  chip - select chip to use
  */
 void set_chip_select(eChipSelect chip)
 {
-   // set chip select pins to high to get transition for MCP2515
-   SET_PIN(CHIP1_CS_PIN);
+   if(CAN_CHIP1 == chip)
+   {
+      // set chip select pins to high to get transition for MCP2515
+      SET_PIN(CHIP1_CS_PIN);
+   }
+   else
+   {
+      // set chip select pins to high to get transition for MCP2515
+      SET_PIN(CHIP2_CS_PIN);
+   }
 }
 
 /**
- * @brief unset chip select for the right chip
- * @param  chip - select chip to use
+ * \brief unset chip select for the right chip
+ * \param  chip - select chip to use
  */
 void unset_chip_select(eChipSelect chip)
 {
-   // set chip select pins to high to get transition for MCP2515
-   RESET_PIN(CHIP1_CS_PIN);
+   if(CAN_CHIP1 == chip)
+   {
+      // set chip select pins to high to get transition for MCP2515
+      RESET_PIN(CHIP1_CS_PIN);
+   }
+   else
+   {
+      // set chip select pins to high to get transition for MCP2515
+      RESET_PIN(CHIP2_CS_PIN);
+   }
 }
 
 
