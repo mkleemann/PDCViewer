@@ -327,16 +327,8 @@ void set_mode_mcp2515(eChipSelect   chip,
  */
 void setup_interrupt_pins(eChipSelect chip)
 {
-   if(CAN_CHIP1 == chip)
-   {
-      // set interrupt pin to input and internal pull-up resistor
-      PIN_SET_PULLUP(CHIP1_INT_PIN);
-   }
-   else
-   {
-      // set interrupt pin to input and internal pull-up resistor
-      PIN_SET_PULLUP(CHIP2_INT_PIN);
-   }
+   // set interrupt pin to input and internal pull-up resistor
+   PIN_SET_PULLUP(CHIP1_INT_PIN);
 }
 
 /**
@@ -345,20 +337,10 @@ void setup_interrupt_pins(eChipSelect chip)
  */
 void setup_cs_pins(eChipSelect chip)
 {
-   if(CAN_CHIP1 == chip)
-   {
-      // set chip select pins to high to get transition for MCP2515
-      SET_PIN(CHIP1_CS_PIN);
-      // set /CS to output
-      PIN_SET_OUTPUT(CHIP1_CS_PIN);
-   }
-   else
-   {
-      // set chip select pins to high to get transition for MCP2515
-      SET_PIN(CHIP2_CS_PIN);
-      // set /CS to output
-      PIN_SET_OUTPUT(CHIP2_CS_PIN);
-   }
+   // set chip select pins to high to get transition for MCP2515
+   SET_PIN(CHIP1_CS_PIN);
+   // set /CS to output
+   PIN_SET_OUTPUT(CHIP1_CS_PIN);
 }
 
 
@@ -368,16 +350,8 @@ void setup_cs_pins(eChipSelect chip)
  */
 void set_chip_select(eChipSelect chip)
 {
-   if(CAN_CHIP1 == chip)
-   {
-      // set chip select pins to high to get transition for MCP2515
-      SET_PIN(CHIP1_CS_PIN);
-   }
-   else
-   {
-      // set chip select pins to high to get transition for MCP2515
-      SET_PIN(CHIP2_CS_PIN);
-   }
+   // set chip select pins to high to get transition for MCP2515
+   SET_PIN(CHIP1_CS_PIN);
 }
 
 /**
@@ -386,16 +360,8 @@ void set_chip_select(eChipSelect chip)
  */
 void unset_chip_select(eChipSelect chip)
 {
-   if(CAN_CHIP1 == chip)
-   {
-      // set chip select pins to high to get transition for MCP2515
-      RESET_PIN(CHIP1_CS_PIN);
-   }
-   else
-   {
-      // set chip select pins to high to get transition for MCP2515
-      RESET_PIN(CHIP2_CS_PIN);
-   }
+   // set chip select pins to high to get transition for MCP2515
+   RESET_PIN(CHIP1_CS_PIN);
 }
 
 
