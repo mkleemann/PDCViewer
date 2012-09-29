@@ -21,21 +21,24 @@
 #include "can_mcp2515.h"
 
 /**
- * @brief clear filters
- * @param chip - select chip to use
+ * \brief clear filters
+ * \param chip - select chip to use
  *
  * \note
  * The MCP2515 has to be in configuration mode to set these registers. The
  * function uses sequential write mode to save time and program size.
  *
+ * \sa MAX_LENGTH_OF_SEQUENTIAL_ACCESS
  */
 void clear_filters(eChipSelect chip)
 {
-   uint8_t data[12]; // maximum of 12 consecutive registers to write
+   // maximum of 12 consecutive registers to write
+   // e.g. (RXF2EID0 - RXF0SIDH + 1) = 0x0B - 0x00 + 0x01 = 12
+   uint8_t data[MAX_LENGTH_OF_SEQUENTIAL_ACCESS];
    uint8_t i;
 
    // init filters and mask data
-   for(i = 0; i < 12; ++i)
+   for(i = 0; i < MAX_LENGTH_OF_SEQUENTIAL_ACCESS; ++i)
    {
       data[i] = 0;
    }
@@ -65,15 +68,23 @@ void clear_filters(eChipSelect chip)
 }
 
 /**
- * @brief set filters during configuration (static filters)
- * @param chip   - select chip to use
- * @param filter - pointer to filter struct
+ * \brief set filters during configuration (static filters)
+ * \param chip    - select chip to use
+ * \param address - address of filter/mask (start)
+ * \param filter  - pointer to filter struct
  *
- * \todo add filter setup implementation
+ * The filter buffer is always MAX_LENGTH_OF_FILTER_SETUP long. The
+ * definition is the number of needed filter/masks registers (4).
+ *
+ * \sa MAX_LENGTH_OF_FILTER_SETUP
  */
-void setFilters(eChipSelect   chip,
-                uint8_t*      filter)
+void setFilters(eChipSelect chip,
+                uint8_t     address,
+                uint8_t*    filter)
 {
-   // nothing yet
+   write_multi_registers_mcp2515(chip,
+                                 MAX_LENGTH_OF_FILTER_SETUP,
+                                 address,
+                                 filter);
 }
 
