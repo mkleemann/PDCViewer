@@ -34,7 +34,13 @@
 /**************************************************************************/
 
 /**
- * @brief index of MCP2515 chips connected
+ * \addtogroup mcp_init CAN Controller Init Functions
+ * CAN controller initialisation.
+ * @{
+ */
+
+/**
+ * \brief index of MCP2515 chips connected
  *
  * Any adaption here may need to adapt the source. If you keep the naming
  * scheme like CAN_CHIPx, it's easier because of macros using the definitions.
@@ -63,5 +69,7 @@ typedef enum
  */
 #define CHIP1_CS_PIN       B,2
 #define CHIP1_INT_PIN      D,2
+
+/*! @} */
 
 #endif /* CAN_CONFIG_MCP2515_H_ */

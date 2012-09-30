@@ -21,7 +21,7 @@
 #include "can_mcp2515.h"
 
 /**
- * @brief saved working mode before sleeping
+ * \brief saved working mode before sleeping
  *
  * When waking up, the CAN controller will automatically set the LISTEN_ONLY_MODE
  * mode. The mode will changed to the one used before, which is not all the
@@ -30,7 +30,7 @@
 uint8_t volatile savedMCP2515WorkingMode = LISTEN_ONLY_MODE;
 
 /**
- * @brief  put MCP2515 (and attached MCP2551) to sleep
+ * \brief  put MCP2515 (and attached MCP2551) to sleep
  *
  * To put MCP2551 also to sleep, connect RX1BF pin to RS pin of MCP2551. It
  * is not always wanted to wakeup on any CAN activity. Sometimes, with
@@ -38,8 +38,8 @@ uint8_t volatile savedMCP2515WorkingMode = LISTEN_ONLY_MODE;
  * whereas the "slave" interfaces are woken up by wakeup signal from
  * ATmega.
  *
- * @param  chip - chip to use
- * @param  mode - how/when to activate MCP2515 again
+ * \param  chip - chip to use
+ * \param  mode - how/when to activate MCP2515 again
  */
 void mcp2515_sleep(eChipSelect         chip,
                    eInternalSleepMode  mode)
@@ -66,10 +66,10 @@ void mcp2515_sleep(eChipSelect         chip,
 
 
 /**
- * @brief  wakeup MCP2515 (and attached MCP2551) from sleep mode
+ * \brief  wakeup MCP2515 (and attached MCP2551) from sleep mode
  *
- * @param  chip - chip to use
- * @param  mode - how/when to activate MCP2515 again
+ * \param  chip - chip to use
+ * \param  mode - how/when to activate MCP2515 again
  *
  * If in manual wakeup mode, a special sequence is needed to wake the
  * MCP2515 up. This is not needed, when activating the controller by CAN

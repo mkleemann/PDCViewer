@@ -36,6 +36,12 @@
 /**************************************************************************/
 
 /**
+ * \addtogroup mcp_init CAN Controller Init Functions
+ * CAN controller initialisation.
+ * @{
+ */
+
+/**
  * \brief index of internal CAN bitrate setup
  */
 typedef enum
@@ -48,6 +54,16 @@ typedef enum
    NUM_OF_CAN_BITRATES  = 2         // always the last one!
 } eCanBitRate;
 
+/*! @} */
+
+
+/**
+ * \addtogroup mcp_sleep_and_wakeup CAN Controller Sleep and Wakeup Functions
+ * All necessary functions and means to control power modes of MCP2515 CAN
+ * controller.
+ * @{
+ */
+
 /**
  * \brief MCP2515's waking up reasons from sleep mode
  */
@@ -58,6 +74,8 @@ typedef enum
    //! wakeup by AVR
    INT_SLEEP_MANUAL_WAKEUP = 1
 } eInternalSleepMode;
+
+/*! @} */
 
 
 /**
@@ -79,6 +97,12 @@ typedef struct
    uint8_t  data[8];
 } can_t;
 
+/**
+ * \addtogroup mcp_can_error CAN Error Treatment
+ * Functionality to get error status from CAN controller. Error flags will be
+ * analysed and result is given by error code.
+ * @{
+ */
 
 /**
  * \brief CAN error states
@@ -105,15 +129,31 @@ typedef enum
    CAN_ERR_WARNING      = 8
 } can_error_t;
 
+/*! @} */
+
 /**************************************************************************/
 /* DEFINITIONS                                                            */
 /**************************************************************************/
+
+/**
+ * \addtogroup mcp_filters CAN Controller Filter Functions
+ * CAN filter functions.
+ * @{
+ */
 
 /**
  * \def MAX_LENGTH_OF_FILTER_SETUP
  * \brief max number of registers to write a filter or filter mask
  */
 #define MAX_LENGTH_OF_FILTER_SETUP        4
+
+/*! @} */
+
+/**
+ * \addtogroup mcp_register_access CAN Controller Register Access Functions
+ * Access all registers, by reading, writing and bit modification.
+ * @{
+ */
 
 /**
  * \def MAX_LENGTH_OF_SEQUENTIAL_ACCESS
@@ -125,9 +165,17 @@ typedef enum
  */
 #define MAX_LENGTH_OF_SEQUENTIAL_ACCESS   12
 
+/*! @} */
+
 /**************************************************************************/
 /* MCP2515 REGISTER/INIT FUNCTIONS                                        */
 /**************************************************************************/
+
+/**
+ * \addtogroup mcp_init CAN Controller Init Functions
+ * CAN controller initialisation.
+ * @{
+ */
 
 /**
  * \brief  initializes MCP2515 selected
@@ -147,6 +195,15 @@ typedef enum
 bool can_init_mcp2515(eChipSelect chip,
                       eCanBitRate bitrate,
                       uint8_t mode);
+
+/*! @} */
+
+
+/**
+ * \addtogroup mcp_register_access CAN Controller Register Access Functions
+ * Access all registers, by reading, writing and bit modification.
+ * @{
+ */
 
 /**
  * \brief  write to MCP2515 registers
@@ -210,6 +267,16 @@ void bit_modify_mcp2515(eChipSelect chip,
 uint8_t read_status_mcp2515(eChipSelect  chip,
                             uint8_t      command);
 
+/*! @} */
+
+
+/**
+ * \addtogroup mcp_sleep_and_wakeup CAN Controller Sleep and Wakeup Functions
+ * All necessary functions and means to control power modes of MCP2515 CAN
+ * controller.
+ * @{
+ */
+
 /**
  * \brief  put MCP2515 (and attached MCP2551) to sleep
  *
@@ -257,6 +324,14 @@ void mcp2515_wakeup(eChipSelect         chip,
 void set_mode_mcp2515(eChipSelect   chip,
                       uint8_t       mode);
 
+/*! @} */
+
+/**
+ * \addtogroup mcp_filters CAN Controller Filter Functions
+ * CAN filter functions.
+ * @{
+ */
+
 /**
  * \brief clear filters
  * \param chip - select chip to use
@@ -284,9 +359,17 @@ void setFilters(eChipSelect chip,
                 uint8_t     address,
                 uint8_t*    filter);
 
+/*! @} */
+
 /************************************************************************/
 /* CAN FUNCTIONS                                                        */
 /************************************************************************/
+
+/**
+ * \addtogroup mcp_can_access CAN Message Treatment
+ * Functions to send/receive CAN messages.
+ * @{
+ */
 
 /**
  * \brief  send message via CAN
@@ -328,16 +411,57 @@ bool can_check_free_tx_buffers(eChipSelect chip);
  */
 void can_abort_all_transmissions(eChipSelect chip);
 
+/*! @} */
+
+
 /**
- * \brief  get error state of CAN bus
+ * \addtogroup mcp_can_error CAN Error Treatment
+ * Functionality to get error status from CAN controller. Error flags will be
+ * analysed and result is given by error code.
+ * @{
+ */
+
+/**
+ * \brief  get TX error state of CAN bus
  * \param  chip - select chip to use
  * \return error state
+ *
+ * \sa TXBO, TXEP, TXWAR
  */
-can_error_t can_get_bus_errors(eChipSelect chip);
+can_error_t can_get_tx_bus_errors(eChipSelect chip);
+
+/**
+ * \brief  get RX error state of CAN bus
+ * \param  chip - select chip to use
+ * \return error state
+ *
+ * \sa RX1OVR, RX0OVR, RXEP, RXWAR
+ */
+can_error_t can_get_rx_bus_errors(eChipSelect chip);
+
+/**
+ * \brief detect any unusual error count (TEC/REC)
+ * \param  chip - select chip to use
+ * \return error state
+ *
+ * Set when TEC or REC is equal to or greater than 96 (TXWAR or RXWAR = 1)
+ * and reset when both REC and TEC are less than 96.
+ *
+ * \sa EWARN, TXWAR, RXWAR
+ */
+can_error_t can_get_general_bus_errors(eChipSelect chip);
+
+/*! @} */
 
 /**************************************************************************/
 /* HELPERS                                                                */
 /**************************************************************************/
+
+/**
+ * \addtogroup mcp_init CAN Controller Init Functions
+ * CAN controller initialisation.
+ * @{
+ */
 
 /**
  * \brief setting up the interrupt pins
@@ -351,6 +475,14 @@ void setup_interrupt_pins(eChipSelect chip);
  */
 void setup_cs_pins(eChipSelect chip);
 
+/*! @} */
+
+/**
+ * \addtogroup mcp_register_access CAN Controller Register Access Functions
+ * Access all registers, by reading, writing and bit modification.
+ * @{
+ */
+
 /**
  * \brief set chip select for the right chip
  * \param  chip - select chip to use
@@ -363,5 +495,6 @@ void set_chip_select(eChipSelect chip);
  */
 void unset_chip_select(eChipSelect chip);
 
+/*! @} */
 
 #endif /* CAN_MCP2515_H_ */

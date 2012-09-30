@@ -21,9 +21,9 @@
 #include "can_mcp2515.h"
 
 /**
- * @brief  checks if any messages are received (via MCP2515's interrupt pin)
- * @param  chip selected
- * @return true if message was received
+ * \brief  checks if any messages are received (via MCP2515's interrupt pin)
+ * \param  chip selected
+ * \return true if message was received
  */
 bool can_check_message_received(eChipSelect chip)
 {
@@ -34,11 +34,11 @@ bool can_check_message_received(eChipSelect chip)
 }
 
 /**
- * @brief  get received CAN message
+ * \brief  get received CAN message
  *
- * @param  chip - select chip to use
- * @param  msg  - pointer to CAN message to send
- * @return filter match status + 1
+ * \param  chip - select chip to use
+ * \param  msg  - pointer to CAN message to send
+ * \return filter match status + 1
  */
 uint8_t can_get_message(eChipSelect chip,
                         can_t*      msg)

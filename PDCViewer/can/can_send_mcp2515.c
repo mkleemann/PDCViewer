@@ -22,9 +22,9 @@
 
 
 /**
- * @brief  checks if any tx buffer is free to be loaded with a message
- * @param  chip - select chip to use
- * @return true if a buffer is free
+ * \brief  checks if any tx buffer is free to be loaded with a message
+ * \param  chip - select chip to use
+ * \return true if a buffer is free
  */
 bool can_check_free_tx_buffers(eChipSelect chip)
 {
@@ -40,11 +40,11 @@ bool can_check_free_tx_buffers(eChipSelect chip)
 }
 
 /**
- * @brief  send message via CAN
+ * \brief  send message via CAN
  *
- * @param  chip - select chip to use
- * @param  msg  - pointer to CAN message to send
- * @return address of buffer used to send
+ * \param  chip - select chip to use
+ * \param  msg  - pointer to CAN message to send
+ * \return address of buffer used to send
  */
 uint8_t can_send_message(eChipSelect   chip,
                          can_t*        msg)
@@ -118,8 +118,8 @@ uint8_t can_send_message(eChipSelect   chip,
 
 
 /**
- * @brief aborting all CAN transmissions
- * @param  chip - select chip to use
+ * \brief aborting all CAN transmissions
+ * \param chip - select chip to use
  */
 void can_abort_all_transmissions(eChipSelect chip)
 {
