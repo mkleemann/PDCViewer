@@ -22,7 +22,6 @@
 #ifndef CAN_MCP2515_H_
 #define CAN_MCP2515_H_
 
-#include <avr/io.h>
 #include <stdbool.h>
 #include <util/delay.h>
 
@@ -186,6 +185,12 @@ typedef enum
  *
  * \par SPI
  * MCP2515 init routine does NOT initializes SPI. This has to be done before.
+ *
+ * \par Filters
+ * The filters are cleared here, to allow simply every CAN message to be
+ * received, which is for testing purposes the right choice. Any special
+ * filter needs to be set up by the main program. The mode of operation needs
+ * to be the configuration mode for that.
  *
  * \param  chip      - select chip to use
  * \param  bitrate   - CAN bitrate of chip selected
@@ -376,7 +381,7 @@ void setFilters(eChipSelect chip,
  *
  * \param  chip - select chip to use
  * \param  msg  - pointer to CAN message to send
- * \return address of buffer used to send
+ * \return address of buffer used to send or 0, if buffer full
  */
 uint8_t can_send_message(eChipSelect chip,
                          can_t*      msg);

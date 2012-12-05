@@ -44,7 +44,7 @@ bool can_check_free_tx_buffers(eChipSelect chip)
  *
  * \param  chip - select chip to use
  * \param  msg  - pointer to CAN message to send
- * \return address of buffer used to send
+ * \return address of buffer used to send or 0, if buffer full
  */
 uint8_t can_send_message(eChipSelect   chip,
                          can_t*        msg)

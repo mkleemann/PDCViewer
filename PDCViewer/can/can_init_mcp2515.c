@@ -67,6 +67,12 @@ static uint8_t  mcp2515_cnf[NUM_OF_CAN_BITRATES][3] = {
  * \par SPI
  * MCP2515 init routine does NOT initializes SPI. This has to be done before.
  *
+ * \par Filters
+ * The filters are cleared here, to allow simply every CAN message to be
+ * received, which is for testing purposes the right choice. Any special
+ * filter needs to be set up by the main program. The mode of operation needs
+ * to be the configuration mode for that.
+ *
  * \param  chip      - select chip to use
  * \param  bitrate   - CAN bitrate of chip selected
  * \param  mode      - mode of operation of MCP2515 after init
@@ -120,8 +126,8 @@ bool can_init_mcp2515(eChipSelect chip,
       }
 #endif
 
-      // clear filters
-      // TODO: set filters correctly - now all messages are received
+      // clear filters: Now all messages are received. Any other filters need
+      // to be set up by main program.
       clear_filters(chip);
 
       // setup PIN functions
