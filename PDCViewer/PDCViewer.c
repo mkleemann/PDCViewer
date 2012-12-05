@@ -18,15 +18,10 @@
  **/
 
 
-#include <stdbool.h>
-#include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
 #include <avr/cpufunc.h>
-#include <util/delay.h>
 
-#include "util/util.h"
-#include "spi/spi.h"
 #include "can/can_mcp2515.h"
 #include "timer/timer.h"
 #include "matrixbar/matrixbar.h"

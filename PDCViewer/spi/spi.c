@@ -18,9 +18,9 @@
  **/
 
 
-#include <avr/io.h>
-#include "spi.h"
 #include "../util/util.h"
+
+#include "spi.h"
 
 /**
  * @brief setup of SPI pins

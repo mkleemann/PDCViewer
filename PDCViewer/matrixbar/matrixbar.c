@@ -18,7 +18,6 @@
  **/
 
 
-#include <avr/io.h>
 #include "../util/util.h"
 #include "matrixbar.h"
 
