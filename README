@@ -11,8 +11,8 @@ Current Stage:
 Initial setup - nothing woring yet.
 
 At the first step the communication will be done via CAN - easy re-use of
-CAN2matrix project. Later the information should be taken from the CAN2matrix
-board and transferred - UART - to the viewer to show the information.
+CAN2matrix project. Later the information could be taken from the CAN2matrix
+board and transferred - e.g. UART - to the viewer to show the information.
 
 
 Next Steps/Ideas:
