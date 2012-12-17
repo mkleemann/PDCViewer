@@ -39,12 +39,12 @@
  *
  * The state of the FSM is set and read from here.
  */
-static volatile state_t fsmState       = INIT;
+state_t fsmState       = INIT;
 
 /**
  * \brief set current column
  */
-static volatile uint8_t columnInUse    = 0;
+uint8_t columnInUse    = 0;
 
 /**
  * \brief save input values to show
@@ -60,7 +60,7 @@ typedef struct
 /**
  * \brief storage of values in use
  */
-static volatile storage_t storage;
+storage_t storage;
 
 // === MAIN LOOP =============================================================
 
@@ -238,7 +238,7 @@ void run(void)
                // 1<-3 0001<-0011
                // 2<-6 0010<-0110
                // 3<-7 0011<-0111
-               // only get values, if bit 1 is not set to get only rear values
+               // only, if bit 1 is set to fetch rear values
                if (i & 0x02)
                {
                   // index is bit 0 + (bit 2 >> 1)
@@ -251,15 +251,15 @@ void run(void)
    }
 #else
    // testing w/o CAN
-   matrixbar_reset_col(++columnInUse);
-   matrixbar_set(storage.sensorVal[columnInUse % MATRIXBAR_NUM_COLS]);
-   matrixbar_set_col(columnInUse);
 
    // reset timer counter
    setTimer1Count(0);
-
-
 #endif
+
+   // set matrix bargraph
+   matrixbar_reset_col(++columnInUse);
+   matrixbar_set(storage.sensorVal[columnInUse % MATRIXBAR_NUM_COLS]);
+   matrixbar_set_col(columnInUse);
 }
 
 /**
