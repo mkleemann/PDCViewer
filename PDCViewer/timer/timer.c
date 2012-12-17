@@ -166,13 +166,13 @@ void initTimer2(eTimerMode mode)
 
    switch(mode)
    {
-      case TimerOverflow:        // overflow interrupt
+      case TimerOverflow:
       {
          TIMSK |= (1 << TOIE2);  // set overflow interrupt enable
          break;
       }
 
-      case TimerCompare:         // CTC
+      case TimerCompare:
       {
          // phase correct PWM
          TIMSK       |= (1 << OCIE2);           // set output compare interrupt enable
@@ -186,7 +186,7 @@ void initTimer2(eTimerMode mode)
          break;
       }
 
-      case TimerFastPwm:         // Fast PWM
+      case TimerFastPwm:
       {
          // TODO: fill in initialization for Fast PWM mode of Timer2
          break;
