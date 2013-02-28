@@ -143,6 +143,7 @@ void sleepDetected(void)
 {
    // stop timer for now
    stopTimer1();
+   stopTimer2();
 
 #ifndef ___NO_CAN___
    // set CAN controller to sleep
@@ -204,6 +205,7 @@ void wakeUp(void)
 
    // restart timers
    restartTimer1();
+   restartTimer2();
 
    sei();
 }
@@ -286,6 +288,16 @@ ISR(TIMER1_CAPT_vect)
 }
 
 /**
+ * \brief interrupt service routine for Timer2 capture
+ *
+ * Timer2 input compare interrupt (~50ms 4MHz@1024 prescale factor)
+ **/
+ISR(TIMER2_COMP_vect)
+{
+   // set timeout flag
+}
+
+/**
  * \brief interrupt service routine for external interrupt 0
  *
  * External Interrupt0 handler to wake up from CAN activity
@@ -318,6 +330,8 @@ void initHardware(void)
 
    // set timer for bussleep detection
    initTimer1(TimerCompare);
+   // set timer for PDC off detection
+   initTimer2(TimerCompare);
 
 #ifndef ___NO_CAN___
    // initialize the hardware SPI with default values set in spi/spi_config.h
