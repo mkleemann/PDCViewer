@@ -1,0 +1,12 @@
+[submodule "PDCViewer/modules/matrixbar"]
+	path = PDCViewer/modules/matrixbar
+	url = git@github.com:mkleemann/matrixbar.git
+[submodule "PDCViewer/modules/can"]
+	path = PDCViewer/modules/can
+	url = git@github.com:mkleemann/can.git
+[submodule "PDCViewer/modules/timer"]
+	path = PDCViewer/modules/timer
+	url = git@github.com:mkleemann/timer.git
+[submodule "PDCViewer/modules/spi"]
+	path = PDCViewer/modules/spi
+	url = git@github.com:mkleemann/spi.git
