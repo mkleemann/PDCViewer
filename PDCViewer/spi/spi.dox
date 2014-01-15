@@ -1,6 +1,0 @@
-/**
- * \page page5 SPI Interface
- * \section spi_brief Common SPI Communication
- *
- * This module can be used to communicate via SPI, either as master or slave.
- */
