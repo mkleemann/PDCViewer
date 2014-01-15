@@ -26,6 +26,8 @@
 #ifndef CAN_CONFIG_MCP2515_H_
 #define CAN_CONFIG_MCP2515_H_
 
+#include "util/util.h"
+
 /**************************************************************************/
 /* TYPEDEFINITIONS                                                        */
 /*                                                                        */
@@ -38,6 +40,19 @@
  * CAN controller initialisation.
  * @{
  */
+
+/**
+ * \brief index of internal CAN bitrate setup
+ */
+typedef enum
+{
+   //! 100kbps
+   CAN_BITRATE_100_KBPS = 0,
+   //! 125kbps
+   CAN_BITRATE_125_KBPS = 1,
+   //! maximum index of possible CAN bitrates
+   NUM_OF_CAN_BITRATES  = 2         // always the last one!
+} eCanBitRate;
 
 /**
  * \brief index of MCP2515 chips connected
@@ -53,7 +68,6 @@ typedef enum
    NUM_OF_MCP2515 = 1
 } eChipSelect;
 
-
 /**************************************************************************/
 /* SETTINGS                                                               */
 /**************************************************************************/
@@ -61,15 +75,53 @@ typedef enum
 // Port definitions to access the defined MCP2515
 
 /**
- * \def CHIP1_CS_PIN
- * \brief chip select pin of CAN controller 1
+ * \def CAN_CS_PORTS
+ * \brief definition of cs port pins for each can chip
  *
- * \def CHIP1_INT_PIN
- * \brief (receive) interrupt pin of CAN controller 1
+ * These pins are used for chip select signal to each MCP2515. This
+ * structure has to correspond with the chip select enumeration.
+ * \sa eChipSelect
  */
-#define CHIP1_CS_PIN       B,2
-#define CHIP1_INT_PIN      D,2
+#define CAN_CS_PORTS  SET_PORT_PTR(B,2)
+
+/**
+ * \def CAN_INT_PORTS
+ * \brief definition of int port pins for each can chip
+ *
+ * These pins are used for interrupt signal of each MCP2515. This
+ * structure has to correspond with the chip select enumeration.
+ * \sa eChipSelect
+ */
+#define CAN_INT_PORTS SET_PORT_PTR(D,2)
 
 /*! @} */
+
+
+/**************************************************************************/
+
+/**************************************************************************/
+/* GETTER                                                                 */
+/**************************************************************************/
+
+/**
+ * \brief get pointer to configuration
+ * \param bitrate to be used
+ * \return pointer to configuration struct
+ */
+uint8_t * getCanConfiguration(eCanBitRate bitrate);
+
+/**
+ * \brief get the CS port structure
+ * \param chip selected
+ * \return pointer to structure
+ */
+portaccess_t * getCSPort(eChipSelect chip);
+
+/**
+ * \brief get the INT port structure
+ * \param chip selected
+ * \return pointer to structure
+ */
+portaccess_t * getINTPort(eChipSelect chip);
 
 #endif /* CAN_CONFIG_MCP2515_H_ */
