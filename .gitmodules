@@ -10,3 +10,6 @@
 [submodule "PDCViewer/modules/spi"]
 	path = PDCViewer/modules/spi
 	url = git@github.com:mkleemann/spi.git
+[submodule "cmake"]
+	path = cmake
+	url = git@github.com:mkleemann/cmake-avr.git
