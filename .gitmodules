@@ -13,3 +13,6 @@
 [submodule "cmake"]
 	path = cmake
 	url = git@github.com:mkleemann/cmake-avr.git
+[submodule "PDCViewer/modules/util"]
+	path = PDCViewer/modules/util
+	url = git@github.com:mkleemann/util.git
