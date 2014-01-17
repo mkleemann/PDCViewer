@@ -1,5 +1,5 @@
 .git/
-*.*suo
+*.ats*
 /**/Debug/
 /**/Release/
 /**/html/
@@ -21,4 +21,7 @@
 /**/**/*.xcf
 /**/**/**/*.xcf
 /**/*.v*
+/**/Makefile
+/**/*.mk
+/**/*.cproj
 
