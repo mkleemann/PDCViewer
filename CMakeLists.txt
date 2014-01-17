@@ -34,7 +34,9 @@ message(STATUS "Current L_FUSE is set to: ${AVR_L_FUSE}")
 ##################################################################################
 # set build type
 ##################################################################################
-set(CMAKE_BUILD_TYPE Release)
+if(NOT CMAKE_BUILD_TYPE)
+   set(CMAKE_BUILD_TYPE Release)
+endif(NOT CMAKE_BUILD_TYPE)
 
 ##################################################################################
 # MCU speed (Hz) needs to be defined for AVR toolchain, e.g. delay.h
