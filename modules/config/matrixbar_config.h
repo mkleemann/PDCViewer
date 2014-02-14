@@ -35,7 +35,7 @@
  *
  * \see P_MATRIXBAR_ROW
  */
-#define MATRIXBAR_NUM_ROWS    1
+#define MATRIXBAR_NUM_ROWS    3
 
 /**
  * \brief number of columns used
@@ -45,7 +45,7 @@
  *
  * \see P_MATRIXBAR_COL
  */
-#define MATRIXBAR_NUM_COLS    4
+#define MATRIXBAR_NUM_COLS    1
 
 /**
  * \brief maximum value which causes all bargraph pins to be high
@@ -120,7 +120,9 @@
  * | 0   0   0   0   0   1   0   0   1   0   1   1   1   0   1   1 |
  * \endcode
  */
-#define P_MATRIXBAR_ROW       {&DDR(C), &PORT(C), 0x3F}
+#define P_MATRIXBAR_ROW       {&DDR(C), &PORT(C), 0x3F}, \
+                              {&DDR(D), &PORT(D), 0x03}, \
+                              {&DDR(D), &PORT(D), 0x18}
 
 /**
  * \def P_MATRIXBAR_COL
@@ -132,7 +134,7 @@
  *
  * \see P_MATRIXBAR_ROW
  */
-#define P_MATRIXBAR_COL       {&DDR(D), &PORT(D), 0x0F}
+#define P_MATRIXBAR_COL       {&DDR(D), &PORT(D), 0x60}
 
 /**
  * \def P_MATRIXBAR_COL_INVERTED

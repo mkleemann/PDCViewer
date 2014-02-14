@@ -54,7 +54,7 @@ uint8_t columnInUse    = 0;
 typedef struct
 {
    //! array of PDC values to save
-   uint8_t  sensorVal[MATRIXBAR_NUM_COLS];
+   uint8_t  sensorVal[NUM_OF_PDC_VALUES];
 } storage_t;
 
 /**
@@ -265,9 +265,9 @@ void run(void)
 #endif
 
    // set matrix bargraph
-   matrixbar_reset_col(++columnInUse);
-   matrixbar_set(storage.sensorVal[columnInUse % MATRIXBAR_NUM_COLS]);
-   matrixbar_set_col(columnInUse);
+//   matrixbar_reset_col(++columnInUse);
+//   matrixbar_set(storage.sensorVal[columnInUse % NUM_OF_PDC_VALUES]);
+//   matrixbar_set_col(columnInUse);
 }
 
 /**
@@ -346,7 +346,7 @@ void initHardware(void)
 #endif
 
    // set storage to initial values
-   for(i = 0; i < MATRIXBAR_NUM_COLS; ++i)
+   for(i = 0; i < NUM_OF_PDC_VALUES; ++i)
    {
       storage.sensorVal[i] = PDC_OUT_OF_RANGE;
    }
