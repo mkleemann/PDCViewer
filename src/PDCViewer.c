@@ -387,6 +387,33 @@ void initHardware(void)
 bool initCAN(void)
 {
    bool retVal = can_init_mcp2515(CAN_CHIP1, CAN_BITRATE_100_KBPS, LISTEN_ONLY_MODE);
+   /*
+    * SIDH -> bits 3..10 of CAN ID @ bits 0..7
+    * SIDL -> bits 0..2  of CAN ID @ bits 5..7
+    */
+   uint8_t filterVals[MAX_LENGTH_OF_FILTER_SETUP] = {((PDC_CAN_ID >> 3) & 0xFF), // SIDH
+                                                     ((PDC_CAN_ID << 5) & 0xE0), // SIDL
+                                                     0xFF,                       // EID8
+                                                     0xFF};                      // EID0
+   if(true == retVal)
+   {
+      // set filters to currently used can message, ignore anything else
+      set_mode_mcp2515(CAN_CHIP1, CONFIG_MODE);
+      // masks
+      setFilters(CAN_CHIP1, RXM0SIDH, filterVals);
+      setFilters(CAN_CHIP1, RXM1SIDH, filterVals);
+      // filters
+      setFilters(CAN_CHIP1, RXF0SIDH, filterVals);
+      setFilters(CAN_CHIP1, RXF1SIDH, filterVals);
+      /* not yet...
+      setFilters(CAN_CHIP1, RXF2SIDH, filterVals);
+      setFilters(CAN_CHIP1, RXF3SIDH, filterVals);
+      setFilters(CAN_CHIP1, RXF4SIDH, filterVals);
+      setFilters(CAN_CHIP1, RXF5SIDH, filterVals);
+      */
+      // back to normal
+      set_mode_mcp2515(CAN_CHIP1, LISTEN_ONLY_MODE);
+   }
    // If an error roccurs, the main loop is not started, so it's ok to set
    // the state here.
    fsmState = RUNNING;
