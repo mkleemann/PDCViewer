@@ -1,18 +1,18 @@
 [submodule "PDCViewer/modules/matrixbar"]
-	path = PDCViewer/modules/matrixbar
+	path = modules/matrixbar
 	url = git@github.com:mkleemann/matrixbar.git
 [submodule "PDCViewer/modules/can"]
-	path = PDCViewer/modules/can
+	path = modules/can
 	url = git@github.com:mkleemann/can.git
 [submodule "PDCViewer/modules/timer"]
-	path = PDCViewer/modules/timer
+	path = modules/timer
 	url = git@github.com:mkleemann/timer.git
 [submodule "PDCViewer/modules/spi"]
-	path = PDCViewer/modules/spi
+	path = modules/spi
 	url = git@github.com:mkleemann/spi.git
 [submodule "cmake"]
 	path = cmake
 	url = git@github.com:mkleemann/cmake-avr.git
 [submodule "PDCViewer/modules/util"]
-	path = PDCViewer/modules/util
+	path = modules/util
 	url = git@github.com:mkleemann/util.git
