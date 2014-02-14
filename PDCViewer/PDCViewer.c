@@ -70,8 +70,14 @@ storage_t storage;
  * The main loop consists of the FSM and calls all necessary init sequences
  * before entering it. Any error in the init process will result in
  * entering the error state.
+ *
+ * \returns  nothing, since it does not return
  **/
+#ifndef __DOXYGEN__
 int __attribute__((OS_main)) main(void)
+#else
+int main(void)
+#endif
 {
 
    initHardware();
