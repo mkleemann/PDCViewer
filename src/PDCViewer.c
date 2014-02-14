@@ -22,6 +22,7 @@
 #include <avr/sleep.h>
 #include <avr/cpufunc.h>
 
+#include "leds/leds.h"
 #include "can/can_mcp2515.h"
 #include "timer/timer.h"
 #include "matrixbar/matrixbar.h"
@@ -150,6 +151,9 @@ void sleepDetected(void)
    // stop timer for now
    stopTimer1();
    stopTimer2();
+   // leds off to save power
+   led_all_off();
+   matrixbar_clear();
 
 #ifndef ___NO_CAN___
    // set CAN controller to sleep
@@ -212,6 +216,8 @@ void wakeUp(void)
    // restart timers
    restartTimer1();
    restartTimer2();
+   // set status LED to show run state
+   led_on(statusLed);
 
    sei();
 }
@@ -278,6 +284,8 @@ void run(void)
  */
 void errorState(void)
 {
+   led_toggle(statusLed);
+   _delay_ms(500);
 }
 
 
@@ -353,6 +361,9 @@ void initHardware(void)
 
    // init matrix bargraph
    matrixbar_init();
+   // init status LED and switch to on
+   led_init();
+   led_on(statusLed);
 
    // set wakeup interrupt trigger on low level
    MCUCR |= EXTERNAL_INT0_TRIGGER;

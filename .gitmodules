@@ -16,3 +16,6 @@
 [submodule "PDCViewer/modules/util"]
 	path = modules/util
 	url = git@github.com:mkleemann/util.git
+[submodule "modules/leds"]
+	path = modules/leds
+	url = git@github.com:mkleemann/leds.git

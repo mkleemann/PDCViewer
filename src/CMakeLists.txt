@@ -19,6 +19,7 @@ message(STATUS "avr-libc: ${C_LIB}")
 target_link_libraries(
    PDCViewer-${AVR_MCU}.elf
    can-${AVR_MCU}
+   leds-${AVR_MCU}
    spi-${AVR_MCU}
    timer-${AVR_MCU}
    matrixbar-${AVR_MCU}

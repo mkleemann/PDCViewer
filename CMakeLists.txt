@@ -121,6 +121,7 @@ include_directories(modules)
 # adding modules
 ##################################################################################
 add_subdirectory(modules/can)
+add_subdirectory(modules/leds)
 add_subdirectory(modules/spi)
 add_subdirectory(modules/timer)
 add_subdirectory(modules/matrixbar)
