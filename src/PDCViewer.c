@@ -231,8 +231,6 @@ void wakeUp(void)
 
 /**
  * \brief do all the work.
- *
- * \todo fetch information from CAN1
  */
 void run(void)
 {
