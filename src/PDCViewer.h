@@ -67,16 +67,6 @@
  */
 #define PDC_CAN_ID               0x54B
 
-/**
- * \brief number of values to get from PDC message
- *
- * The PDC values are evaluated to fit into the LED matrix for the
- * bargraph display. There are 4 values, two for the right and two
- * for left side. Each side shows the smallest distance from the
- * PDC.
- */
-#define NUM_OF_PDC_VALUES 4
-
 // === TYPE DEFINITIONS ======================================================
 
 /**

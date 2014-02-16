@@ -31,7 +31,8 @@
  * \brief number of rows used
  *
  * This value should correspond with the setup in P_MATRIXBAR_ROW. At least
- * it should be no larger than the definitions in it.
+ * it should be no larger than the definitions of port/pin entries in it. The
+ * pins themselves are not meant here.
  *
  * \see P_MATRIXBAR_ROW
  */
@@ -41,7 +42,8 @@
  * \brief number of columns used
  *
  * This value should correspond with the setup in P_MATRIXBAR_COL. At least
- * it should be no larger than the definitions in it.
+ * it should be no larger than the definitions of port/pin entries in it. The
+ * pins themselves are not meant here.
  *
  * \see P_MATRIXBAR_COL
  */

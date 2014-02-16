@@ -48,20 +48,24 @@ state_t fsmState       = INIT;
 uint8_t columnInUse    = 0;
 
 /**
- * \brief save input values to show
- * \note The struct isn't really necessary, but makes it easier to provide
- * simple add-ons.
+ * \brief real number of columns available
  */
-typedef struct
-{
-   //! array of PDC values to save
-   uint8_t  sensorVal[NUM_OF_PDC_VALUES];
-} storage_t;
+uint8_t numOfColumns   = 0;
 
-/**
- * \brief storage of values in use
- */
-storage_t storage;
+//! used number of columns - should match numOfColumns, but need not
+#define NUM_OF_PDC_VALUES_SHOWN  2
+
+//! store max value of left and right side
+uint8_t pdcValueStored[NUM_OF_PDC_VALUES_SHOWN] = {PDC_OUT_OF_RANGE, PDC_OUT_OF_RANGE};
+
+//! storage of value of the outer sensor on the left side
+uint8_t pdcValueLeftOut  = PDC_OUT_OF_RANGE;
+//! storage of value of the inner sensor on the left side
+uint8_t pdcValueLeftIn   = PDC_OUT_OF_RANGE;
+//! storage of value of the outer sensor on the right side
+uint8_t pdcValueRightOut = PDC_OUT_OF_RANGE;
+//! storage of value of the inner sensor on the right side
+uint8_t pdcValueRightIn  = PDC_OUT_OF_RANGE;
 
 // === MAIN LOOP =============================================================
 
@@ -154,6 +158,9 @@ void sleepDetected(void)
    // leds off to save power
    led_all_off();
    matrixbar_clear();
+   // all PDC values to default
+   pdcValueStored[0] = PDC_OUT_OF_RANGE;
+   pdcValueStored[1] = PDC_OUT_OF_RANGE;
 
 #ifndef ___NO_CAN___
    // set CAN controller to sleep
@@ -231,7 +238,7 @@ void run(void)
 {
 #ifndef ___NO_CAN___
    can_t    msg;
-   uint8_t  i, idx;
+   uint8_t  i;
 
    if (can_check_message_received(CAN_CHIP1))
    {
@@ -247,18 +254,12 @@ void run(void)
             // fetch only rear sensors
             for (i = 0; i < msg.header.len; ++i)
             {
-               // bytes 2/3/6/7 match to 0..3 (num of matrix columns)
-               // 0<-2 0000<-0010
-               // 1<-3 0001<-0011
-               // 2<-6 0010<-0110
-               // 3<-7 0011<-0111
-               // only, if bit 1 is set to fetch rear values
-               if (i & 0x02)
-               {
-                  // index is bit 0 + (bit 2 >> 1)
-                  idx = (i & 0x01) + ((i & 0x04) >> 1);
-                  storage.sensorVal[idx] = msg.data[i];
-               }
+               pdcValueLeftOut   = msg.data[2];
+               pdcValueRightOut  = msg.data[3];
+               pdcValueLeftIn    = msg.data[6];
+               pdcValueRightIn   = msg.data[7];
+               pdcValueStored[0] = (pdcValueLeftOut < pdcValueLeftIn) ? pdcValueLeftOut : pdcValueLeftIn;
+               pdcValueStored[1] = (pdcValueRightOut < pdcValueRightIn) ? pdcValueRightOut : pdcValueRightIn;
             }
          }
       }
@@ -269,11 +270,6 @@ void run(void)
    // reset timer counter
    setTimer1Count(0);
 #endif
-
-   // set matrix bargraph
-//   matrixbar_reset_col(++columnInUse);
-//   matrixbar_set(storage.sensorVal[columnInUse % NUM_OF_PDC_VALUES]);
-//   matrixbar_set_col(columnInUse);
 }
 
 /**
@@ -304,11 +300,16 @@ ISR(TIMER1_CAPT_vect)
 /**
  * \brief interrupt service routine for Timer2 capture
  *
- * Timer2 input compare interrupt (~50ms 4MHz@1024 prescale factor)
+ * Timer2 input compare interrupt (~5ms 4MHz@1024 prescale factor) is used
+ * to trigger the multiplexing of the display (bargraph) sides. At ~5ms the
+ * flickering shouldn't be so obvious.
  **/
 ISR(TIMER2_COMP_vect)
 {
-   // set timeout flag
+   matrixbar_reset_col(columnInUse % NUM_OF_PDC_VALUES_SHOWN);
+   ++columnInUse;
+   matrixbar_set(pdcValueStored[columnInUse % NUM_OF_PDC_VALUES_SHOWN]);
+   matrixbar_set_col(columnInUse % NUM_OF_PDC_VALUES_SHOWN);
 }
 
 /**
@@ -340,8 +341,6 @@ ISR(INT0_vect)
  */
 void initHardware(void)
 {
-   int i;
-
    // set timer for bussleep detection
    initTimer1(TimerCompare);
    // set timer for PDC off detection
@@ -353,14 +352,10 @@ void initHardware(void)
    spi_master_init();
 #endif
 
-   // set storage to initial values
-   for(i = 0; i < NUM_OF_PDC_VALUES; ++i)
-   {
-      storage.sensorVal[i] = PDC_OUT_OF_RANGE;
-   }
-
    // init matrix bargraph
    matrixbar_init();
+   // after init, the number of columns used is known
+   numOfColumns = matrixbar_get_num_of_cols();
    // init status LED and switch to on
    led_init();
    led_on(statusLed);

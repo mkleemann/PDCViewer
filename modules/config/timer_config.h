@@ -98,12 +98,12 @@
 /**
  * @brief Timer 2 Output Compare Value
  *
- * The value given calculates to approx. 50 ms (4MHz@1024 prescale factor).
- * Correctly, it would be 50.176 ms.
+ * The value given calculates to approx. 5ms (4MHz@1024 prescale factor).
+ * Correctly, it would be 5.12ms.
  *
  * Default value should be set to MAX (0xFF)
  */
-#define TIMER2_COMPARE_VALUE  196
+#define TIMER2_COMPARE_VALUE  20
 
 #endif
 
