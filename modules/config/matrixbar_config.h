@@ -36,7 +36,7 @@
  *
  * \see P_MATRIXBAR_ROW
  */
-#define MATRIXBAR_NUM_ROWS    3
+#define MATRIXBAR_NUM_ROWS    2
 
 /**
  * \brief number of columns used
@@ -123,8 +123,7 @@
  * \endcode
  */
 #define P_MATRIXBAR_ROW       {&DDR(C), &PORT(C), 0x3F}, \
-                              {&DDR(D), &PORT(D), 0x03}, \
-                              {&DDR(D), &PORT(D), 0x18}
+                              {&DDR(D), &PORT(D), 0x1B}
 
 /**
  * \def P_MATRIXBAR_COL
