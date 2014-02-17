@@ -18,15 +18,15 @@
  **/
 
 
-#include <avr/interrupt.h>
-#include <avr/sleep.h>
-#include <avr/cpufunc.h>
-
 #include "leds/leds.h"
 #include "can/can_mcp2515.h"
 #include "timer/timer.h"
 #include "matrixbar/matrixbar.h"
 #include "PDCViewer.h"
+
+#include <avr/interrupt.h>
+#include <avr/sleep.h>
+#include <avr/cpufunc.h>
 
 // === GLOBALS ===============================================================
 
@@ -48,24 +48,20 @@ state_t fsmState       = INIT;
 uint8_t columnInUse    = 0;
 
 /**
- * \brief real number of columns available
+ * \brief trigger active column of display
  */
-uint8_t numOfColumns   = 0;
+bool columnTrigger       = false;
 
-//! used number of columns - should match numOfColumns, but need not
+/**
+ * \brief used number of columns
+ *
+ * This value should match number of columns of matrixbar, but need not
+ * necessarily. In this case it matches.
+ */
 #define NUM_OF_PDC_VALUES_SHOWN  2
 
 //! store max value of left and right side
 uint8_t pdcValueStored[NUM_OF_PDC_VALUES_SHOWN] = {PDC_OUT_OF_RANGE, PDC_OUT_OF_RANGE};
-
-//! storage of value of the outer sensor on the left side
-uint8_t pdcValueLeftOut  = PDC_OUT_OF_RANGE;
-//! storage of value of the inner sensor on the left side
-uint8_t pdcValueLeftIn   = PDC_OUT_OF_RANGE;
-//! storage of value of the outer sensor on the right side
-uint8_t pdcValueRightOut = PDC_OUT_OF_RANGE;
-//! storage of value of the inner sensor on the right side
-uint8_t pdcValueRightIn  = PDC_OUT_OF_RANGE;
 
 // === MAIN LOOP =============================================================
 
@@ -185,6 +181,9 @@ void sleeping(void)
 {
    cli();
 
+   // don't wake up with trigger set
+   columnTrigger = false;
+
    // enable wakeup interrupt INT0
    GICR  |= EXTERNAL_INT0_ENABLE;
 
@@ -236,7 +235,6 @@ void run(void)
 {
 #ifndef ___NO_CAN___
    can_t    msg;
-   uint8_t  i;
 
    if (can_check_message_received(CAN_CHIP1))
    {
@@ -250,15 +248,10 @@ void run(void)
          if ((PDC_CAN_ID == msg.msgId) && (0 == msg.header.rtr))
          {
             // fetch only rear sensors
-            for (i = 0; i < msg.header.len; ++i)
-            {
-               pdcValueLeftOut   = msg.data[2];
-               pdcValueRightOut  = msg.data[3];
-               pdcValueLeftIn    = msg.data[6];
-               pdcValueRightIn   = msg.data[7];
-               pdcValueStored[0] = (pdcValueLeftOut < pdcValueLeftIn) ? pdcValueLeftOut : pdcValueLeftIn;
-               pdcValueStored[1] = (pdcValueRightOut < pdcValueRightIn) ? pdcValueRightOut : pdcValueRightIn;
-            }
+            // left
+            pdcValueStored[0] = (msg.data[2] < msg.data[6]) ? msg.data[2] : msg.data[6];
+            // right
+            pdcValueStored[1] = (msg.data[3] < msg.data[7]) ? msg.data[3] : msg.data[7];
          }
       }
    }
@@ -268,6 +261,16 @@ void run(void)
    // reset timer counter
    setTimer1Count(0);
 #endif
+
+   if(true == columnTrigger)
+   {
+      columnTrigger = false;
+      // trigger value presentation in matrixbar
+      matrixbar_reset_col(columnInUse % NUM_OF_PDC_VALUES_SHOWN);
+      ++columnInUse;
+      matrixbar_set(pdcValueStored[columnInUse % NUM_OF_PDC_VALUES_SHOWN]);
+      matrixbar_set_col(columnInUse % NUM_OF_PDC_VALUES_SHOWN);
+   }
 }
 
 /**
@@ -304,10 +307,7 @@ ISR(TIMER1_CAPT_vect)
  **/
 ISR(TIMER2_COMP_vect)
 {
-   matrixbar_reset_col(columnInUse % NUM_OF_PDC_VALUES_SHOWN);
-   ++columnInUse;
-   matrixbar_set(pdcValueStored[columnInUse % NUM_OF_PDC_VALUES_SHOWN]);
-   matrixbar_set_col(columnInUse % NUM_OF_PDC_VALUES_SHOWN);
+   columnTrigger = true;
 }
 
 /**
@@ -352,8 +352,6 @@ void initHardware(void)
 
    // init matrix bargraph
    matrixbar_init();
-   // after init, the number of columns used is known
-   numOfColumns = matrixbar_get_num_of_cols();
    // init status LED and switch to on
    led_init();
    led_on(statusLed);
