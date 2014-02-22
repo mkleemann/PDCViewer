@@ -15,22 +15,22 @@
  *
  * \section sec_about About the project
  * Since the <a href="https://github.com/mkleemann/CAN2matrix">CAN2matrix</a> project
- * was developed to replace the original radio unit, the display of the PDC (park
+ * was developed to replace the car's original radio unit, the display of the PDC (park
  * distance control) was no longer available. To have a visual feedback again, the
  * PDCViewer was created.
  *
- * It might be possible to merge both projects at some point in time, since they
- * currently reside next to each other, using the same CAN bus/resource. This also
- * might save hardware and power consumption.
+ * At some point in time, both projects may merge. They currently reside right
+ * next to each other, sharing the same CAN bus and resources. This also might 
+ * save hardware and power consumption.
  *
- * As a standalone project, the possibilities are not limited to PDC, but can show
- * any value comming via the CAN. It also can be positioned at a different location
- * with in the car, e.g. the rear, or even be used multiple times, e.g. for front an
+ * As a standalone project, the possibilities are not limited to PDC. The bargraphs can
+ * show any value coming via CAN. It may also be positioned at a different location
+ * within the car, e.g. the rear, or even be used multiple times, e.g. for front and
  * rear sensors.
  *
  * \section sec_schematics Schematics
- * The simple schematics of the project. The power supply may not be the final one
- * for an in-car environment.
+ * The simple schematics of the project. The power supply part is likely not the final
+ * one for an in-car environment.
  *
  * \image html "doc/schematics/PDCViewer.png" "Schematics of PDCViewer"
  **/
