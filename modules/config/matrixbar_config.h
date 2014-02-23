@@ -31,17 +31,19 @@
  * \brief number of rows used
  *
  * This value should correspond with the setup in P_MATRIXBAR_ROW. At least
- * it should be no larger than the definitions in it.
+ * it should be no larger than the definitions of port/pin entries in it. The
+ * pins themselves are not meant here.
  *
  * \see P_MATRIXBAR_ROW
  */
-#define MATRIXBAR_NUM_ROWS    3
+#define MATRIXBAR_NUM_ROWS    2
 
 /**
  * \brief number of columns used
  *
  * This value should correspond with the setup in P_MATRIXBAR_COL. At least
- * it should be no larger than the definitions in it.
+ * it should be no larger than the definitions of port/pin entries in it. The
+ * pins themselves are not meant here.
  *
  * \see P_MATRIXBAR_COL
  */
@@ -121,8 +123,7 @@
  * \endcode
  */
 #define P_MATRIXBAR_ROW       {&DDR(C), &PORT(C), 0x3F}, \
-                              {&DDR(D), &PORT(D), 0x03}, \
-                              {&DDR(D), &PORT(D), 0x18}
+                              {&DDR(D), &PORT(D), 0x1B}
 
 /**
  * \def P_MATRIXBAR_COL

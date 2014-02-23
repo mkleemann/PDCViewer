@@ -18,15 +18,15 @@
  **/
 
 
-#include <avr/interrupt.h>
-#include <avr/sleep.h>
-#include <avr/cpufunc.h>
-
 #include "leds/leds.h"
 #include "can/can_mcp2515.h"
 #include "timer/timer.h"
 #include "matrixbar/matrixbar.h"
 #include "PDCViewer.h"
+
+#include <avr/interrupt.h>
+#include <avr/sleep.h>
+#include <avr/cpufunc.h>
 
 // === GLOBALS ===============================================================
 
@@ -48,20 +48,20 @@ state_t fsmState       = INIT;
 uint8_t columnInUse    = 0;
 
 /**
- * \brief save input values to show
- * \note The struct isn't really necessary, but makes it easier to provide
- * simple add-ons.
+ * \brief trigger active column of display
  */
-typedef struct
-{
-   //! array of PDC values to save
-   uint8_t  sensorVal[NUM_OF_PDC_VALUES];
-} storage_t;
+bool columnTrigger       = false;
 
 /**
- * \brief storage of values in use
+ * \brief used number of columns
+ *
+ * This value should match number of columns of matrixbar, but need not
+ * necessarily. In this case it matches.
  */
-storage_t storage;
+#define NUM_OF_PDC_VALUES_SHOWN  2
+
+//! store max value of left and right side
+uint8_t pdcValueStored[NUM_OF_PDC_VALUES_SHOWN] = {PDC_OUT_OF_RANGE, PDC_OUT_OF_RANGE};
 
 // === MAIN LOOP =============================================================
 
@@ -154,6 +154,9 @@ void sleepDetected(void)
    // leds off to save power
    led_all_off();
    matrixbar_clear();
+   // all PDC values to default
+   pdcValueStored[0] = PDC_OUT_OF_RANGE;
+   pdcValueStored[1] = PDC_OUT_OF_RANGE;
 
 #ifndef ___NO_CAN___
    // set CAN controller to sleep
@@ -177,6 +180,9 @@ void sleepDetected(void)
 void sleeping(void)
 {
    cli();
+
+   // don't wake up with trigger set
+   columnTrigger = false;
 
    // enable wakeup interrupt INT0
    GICR  |= EXTERNAL_INT0_ENABLE;
@@ -224,14 +230,11 @@ void wakeUp(void)
 
 /**
  * \brief do all the work.
- *
- * \todo fetch information from CAN1
  */
 void run(void)
 {
 #ifndef ___NO_CAN___
    can_t    msg;
-   uint8_t  i, idx;
 
    if (can_check_message_received(CAN_CHIP1))
    {
@@ -245,21 +248,10 @@ void run(void)
          if ((PDC_CAN_ID == msg.msgId) && (0 == msg.header.rtr))
          {
             // fetch only rear sensors
-            for (i = 0; i < msg.header.len; ++i)
-            {
-               // bytes 2/3/6/7 match to 0..3 (num of matrix columns)
-               // 0<-2 0000<-0010
-               // 1<-3 0001<-0011
-               // 2<-6 0010<-0110
-               // 3<-7 0011<-0111
-               // only, if bit 1 is set to fetch rear values
-               if (i & 0x02)
-               {
-                  // index is bit 0 + (bit 2 >> 1)
-                  idx = (i & 0x01) + ((i & 0x04) >> 1);
-                  storage.sensorVal[idx] = msg.data[i];
-               }
-            }
+            // left
+            pdcValueStored[0] = (msg.data[2] < msg.data[6]) ? msg.data[2] : msg.data[6];
+            // right
+            pdcValueStored[1] = (msg.data[3] < msg.data[7]) ? msg.data[3] : msg.data[7];
          }
       }
    }
@@ -270,10 +262,15 @@ void run(void)
    setTimer1Count(0);
 #endif
 
-   // set matrix bargraph
-//   matrixbar_reset_col(++columnInUse);
-//   matrixbar_set(storage.sensorVal[columnInUse % NUM_OF_PDC_VALUES]);
-//   matrixbar_set_col(columnInUse);
+   if(true == columnTrigger)
+   {
+      columnTrigger = false;
+      // trigger value presentation in matrixbar
+      matrixbar_reset_col(columnInUse % NUM_OF_PDC_VALUES_SHOWN);
+      ++columnInUse;
+      matrixbar_set(pdcValueStored[columnInUse % NUM_OF_PDC_VALUES_SHOWN]);
+      matrixbar_set_col(columnInUse % NUM_OF_PDC_VALUES_SHOWN);
+   }
 }
 
 /**
@@ -304,11 +301,13 @@ ISR(TIMER1_CAPT_vect)
 /**
  * \brief interrupt service routine for Timer2 capture
  *
- * Timer2 input compare interrupt (~50ms 4MHz@1024 prescale factor)
+ * Timer2 input compare interrupt (~5ms 4MHz@1024 prescale factor) is used
+ * to trigger the multiplexing of the display (bargraph) sides. At ~5ms the
+ * flickering shouldn't be so obvious.
  **/
 ISR(TIMER2_COMP_vect)
 {
-   // set timeout flag
+   columnTrigger = true;
 }
 
 /**
@@ -340,8 +339,6 @@ ISR(INT0_vect)
  */
 void initHardware(void)
 {
-   int i;
-
    // set timer for bussleep detection
    initTimer1(TimerCompare);
    // set timer for PDC off detection
@@ -352,12 +349,6 @@ void initHardware(void)
    spi_pin_init();
    spi_master_init();
 #endif
-
-   // set storage to initial values
-   for(i = 0; i < NUM_OF_PDC_VALUES; ++i)
-   {
-      storage.sensorVal[i] = PDC_OUT_OF_RANGE;
-   }
 
    // init matrix bargraph
    matrixbar_init();
