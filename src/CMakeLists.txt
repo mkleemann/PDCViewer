@@ -16,14 +16,14 @@ message(STATUS "avr-libc: ${C_LIB}")
 ##################################################################################
 # link elf target to libraries
 ##################################################################################
-target_link_libraries(
-   PDCViewer-${AVR_MCU}.elf
-   can-${AVR_MCU}
-   leds-${AVR_MCU}
-   spi-${AVR_MCU}
-   timer-${AVR_MCU}
-   matrixbar-${AVR_MCU}
-   module_config-${AVR_MCU}
+avr_target_link_libraries(
+   PDCViewer
+   can
+   leds
+   spi
+   timer
+   matrixbar
+   module_config
    ${C_LIB}
 )
 
